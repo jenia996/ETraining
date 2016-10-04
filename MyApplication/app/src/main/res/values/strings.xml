@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">My Application</string>
     <string name="action_settings">Settings</string>
+    <string name="a1_activity">This is A1 activity</string>
+    <string name="a2_activity">This is A2 activity</string>
+    <string name="a3_activity">This is A3 activity</string>
+    <string name="a4_activity">This is A4 activity</string>
+    <string name="a5_activity">This is A5 activity</string>
+    <string name="a6_activity">Congratulations</string>
+
 </resources>
