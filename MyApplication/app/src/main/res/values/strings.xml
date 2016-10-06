@@ -1,4 +1,21 @@
 <resources>
     <string name="app_name">My Application</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <string name="action_settings">Settings</string>
+    <string name="news">News</string>
+    <string name="feedback">FeedBack</string>
+    <string name="messages">Messages</string>
+    <string name="friends">Friends</string>
+    <string name="communities">Communities</string>
+    <string name="name_of_friend">Name of Friend</string>
+    <string name="sub_text">android.studio@android.com</string>
+    <string name="main_text">Android Studio</string>
+    <string name="temp_text">Some Text</string>
+    <string name="_100">100</string>
+    <string name="_10000">10000</string>
+    <string name="community_name">Community Name</string>
+    <string name="_16_minutes_ago">16 minutes ago</string>
 </resources>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/news"
+            android:icon="@drawable/ic_news_black_24dp"
+            android:title="@string/news"/>
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_feedback_black_24dp"
+            android:title="@string/feedback"/>
+        <item
+            android:id="@+id/message"
+            android:icon="@drawable/ic_message_black_24dp"
+            android:title="@string/messages"/>
+        <item
+            android:id="@+id/communities"
+            android:icon="@drawable/ic_communities_black_24dp"
+            android:title="@string/communities"/>
+    </group>
+
+    <item android:title="@string/friends">
+        <menu>
+            <item
+                android:id="@+id/first_friend"
+                android:title=""
+                app:actionLayout="@layout/nav_drawer_friend_item"/>
+            <item
+                android:id="@+id/second_friend"
+                android:title=""
+                app:actionLayout="@layout/nav_drawer_friend_item"/>
+        </menu>
+    </item>
+    <item android:title="@string/communities">
+        <menu>
+            <item
+                android:id="@+id/firstCommunity"
+                app:actionLayout="@layout/nav_drawer_community_item"
+                android:title=""/>
+        </menu>
+    </item>
+
+</menu>

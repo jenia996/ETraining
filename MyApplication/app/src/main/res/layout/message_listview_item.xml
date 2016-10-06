@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:padding="4dp"
+
+                android:layout_height="match_parent">
+
+    <com.example.ajax.myapplication.RoundImageView
+        android:id="@+id/companion_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"/>
+
+    <TextView
+        android:id="@+id/companion_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:paddingStart="8dp"
+        android:layout_toEndOf="@id/companion_image"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/companion_name"
+        android:paddingStart="8dp"
+        android:layout_toEndOf="@id/companion_image"
+        android:textSize="14sp"
+        />
+
+    <TextView
+        android:id="@+id/last_seen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:textSize="12sp"/>
+</RelativeLayout>
