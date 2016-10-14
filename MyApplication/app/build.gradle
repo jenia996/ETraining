@@ -3,6 +3,9 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.2"
+
+    def API_URL = '"https://www.goodreads.com/"'
+    def API_KEY = '"zKxs0huf91EZnEjZNpYg"'
     defaultConfig {
         applicationId "com.example.ajax.myapplication"
         minSdkVersion 17
@@ -11,8 +14,35 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    flavorDimensions "paid", "locale"
+    productFlavors {
+        preprod {
+            dimension "paid"
+            buildConfigField "Boolean", "Pay", "false"
+        }
+        prod {
+            dimension "paid"
+            buildConfigField "Boolean", "Pay", "true"
+        }
+        us {
+            dimension "locale"
+            applicationId "com.example.Ajax.myapplication.usa"
+        }
+        china {
+            dimension "locale"
+            applicationId "com.example.Ajax.myapplicaton.china"
+        }
+    }
     buildTypes {
+        debug {
+            buildConfigField "String", "API_URL", API_URL
+            buildConfigField "String", "API_KEY", API_KEY
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
         release {
+            buildConfigField "String", "API_URL", "AnotherURL"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -26,5 +56,9 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
+    compile 'com.google.code.findbugs:jsr305:2.0.1'
+    compile 'com.google.code.gson:gson:2.7'
     testCompile 'junit:junit:4.12'
+    compile project(path: ':backend', configuration: 'android-endpoints')
+    compile project(':util')
 }
