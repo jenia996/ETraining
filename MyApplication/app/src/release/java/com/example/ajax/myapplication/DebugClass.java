@@ -5,7 +5,8 @@ package com.example.ajax.myapplication;
  */
 
 public class DebugClass {
-    private static String releaseFlavour = "DEBUG_FLAVOUR";
+
+    private static String releaseFlavour = "RELEASE_FLAVOUR";
 
     public String getResult() {
         return releaseFlavour;
