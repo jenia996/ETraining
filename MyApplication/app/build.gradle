@@ -39,12 +39,31 @@ android {
             buildConfigField "String", "API_KEY", API_KEY
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def outputFile = output.outputFile
+                    if ((variant.buildType.name == 'debug') && outputFile != null && outputFile.name.endsWith('.apk')) {
+                        def fileName = "HW_Debug" + defaultConfig.versionName + ".apk"
+                        output.outputFile = new File(outputFile.parent, fileName)
+                    }
+                }
+            }
         }
 
         release {
             buildConfigField "String", "API_URL", "AnotherURL"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def outputFile = output.outputFile
+                    if ((variant.buildType.name == 'release') && outputFile != null && outputFile.name.endsWith('.apk')) {
+                        def fileName = "HW_Backend_Release" + defaultConfig.versionName + ".apk"
+                        output.outputFile = new File(outputFile.parent, fileName)
+                    }
+
+                }
+            }
         }
     }
 }
