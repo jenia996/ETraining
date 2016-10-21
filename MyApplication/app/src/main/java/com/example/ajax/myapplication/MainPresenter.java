@@ -2,14 +2,14 @@ package com.example.ajax.myapplication;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
-import com.example.ajax.myapplication.backend.myApi.MyApi;
-import com.example.ajax.myapplication.data.api.ApiManager;
+import com.example.HttpClient;
 import com.example.ajax.myapplication.interfaces.BasePresenter;
 import com.example.ajax.myapplication.interfaces.MainView;
+import com.example.ajax.myapplication.model.entity.Book;
 
 import java.io.IOException;
+import java.util.List;
 
 class MainPresenter implements BasePresenter {
     private MainView view;
@@ -21,19 +21,14 @@ class MainPresenter implements BasePresenter {
     }
 
     private void loadData() {
-        Log.d("Load", "Before thread");
 
         new Thread() {
             @Override
             public void run() {
-                try {
-                    MyApi.GetAuthorInfoById call = ApiManager.getInstance().myApi()
-                            .getAuthorInfoById(BuildConfig.API_URL, BuildConfig.API_KEY, 3389);
-                    String response = call.execute().getData();
-                    notifyResponce(response);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                String result = HttpClient.get("https://www.goodreads.com/search/index" + "" +
+                        ".xml?key=zKxs0huf91EZnEjZNpYg&q=King");
+                XMLHelper helper = new XMLHelper();
+                notifyResponse(helper.parse(result));
             }
         }.start();
     }
@@ -42,18 +37,29 @@ class MainPresenter implements BasePresenter {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                //   view.hideProgressDialog();
+                view.hideProgressDialog();
                 view.showResponce(e.getMessage());
 
             }
         });
     }
 
+    private void notifyResponse(final List<Book> response) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                view.hideProgressDialog();
+                view.showResponce(response);
+            }
+        });
+
+    }
+
     private void notifyResponce(final String response) {
         handler.post(new Runnable() {
             @Override
             public void run() {
-                //   view.hideProgressDialog();
+                view.hideProgressDialog();
                 view.showResponce(response);
 
             }
@@ -62,10 +68,11 @@ class MainPresenter implements BasePresenter {
 
     @Override
     public void onReady() {
-        Log.d("Load", "Entered Method");
         loadData();
-        //   view.showProgressDialog();
+        view.showProgressDialog();
+
     }
+
 
     @Override
     public void resume() {
