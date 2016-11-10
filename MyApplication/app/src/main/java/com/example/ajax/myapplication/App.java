@@ -9,8 +9,10 @@ import com.example.ajax.myapplication.utils.ContextHolder;
  */
 
 public class App extends Application {
+
     @Override
     public void onCreate() {
         ContextHolder.set(this);
+
     }
 }
