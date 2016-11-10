@@ -9,8 +9,6 @@ public interface MainView extends BaseView {
 
     void hideProgressDialog();
 
-    void showResponce(String responce);
-
     void showResponce(List<Book> responce);
 
 }

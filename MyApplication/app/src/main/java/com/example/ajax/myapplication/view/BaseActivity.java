@@ -1,6 +1,7 @@
 package com.example.ajax.myapplication.view;
 
 import android.app.ProgressDialog;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.ajax.myapplication.interfaces.BaseView;
@@ -27,8 +28,4 @@ public abstract class BaseActivity extends AppCompatActivity implements MainView
         }
     }
 
-    @Override
-    public void showResponce(String responce) {
-
-    }
 }
