@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/book_item_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border"
@@ -8,17 +9,17 @@
 
     <ImageView
         android:id="@+id/book_cover_small"
-        android:layout_width="40dp"
-        android:layout_height="60dp"
+        android:layout_width="46dp"
+        android:layout_height="75dp"
         android:layout_alignParentStart="true"
-        android:layout_margin="12dp"
+        android:layout_margin="8dp"
         android:contentDescription="@string/small_book_cover"/>
 
     <TextView
         android:id="@+id/book_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:layout_toEndOf="@id/book_cover_small"
         android:text="@string/title"/>
 
@@ -28,5 +29,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/book_title"
         android:layout_toEndOf="@id/book_cover_small"/>
+
+
+    <TextView
+        android:id="@+id/rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/author_name"
+        android:layout_toEndOf="@id/book_cover_small"/>
+
 
 </RelativeLayout>
