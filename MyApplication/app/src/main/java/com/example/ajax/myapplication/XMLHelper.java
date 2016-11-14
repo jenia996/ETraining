@@ -1,6 +1,5 @@
 package com.example.ajax.myapplication;
 
-import android.content.ContentValues;
 import android.util.Log;
 
 import com.example.ajax.myapplication.database.DBHelper;
@@ -15,16 +14,16 @@ import org.xml.sax.InputSource;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-
-public class XMLHelper {
+final class XMLHelper {
 
     private static final XMLHelper instance = new XMLHelper();
-    private DBHelper mDBHelper;
+    private final DBHelper mDBHelper;
 
     private XMLHelper() {
         mDBHelper = new DBHelper(ContextHolder.get(), null, 1);
@@ -34,33 +33,33 @@ public class XMLHelper {
         return instance;
     }
 
-    public List<Book> parse(String response) {
+    public List<Book> parse(final String response) {
         final List<Book> books = new ArrayList<>();
-        final List<Author> authors = new ArrayList<>();
-        Document doc;
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        final Collection<Author> authors = new ArrayList<>();
+        final Document doc;
+        final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         try {
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            InputSource inputSource = new InputSource();
+            final DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            final InputSource inputSource = new InputSource();
             inputSource.setCharacterStream(new StringReader(response));
             doc = documentBuilder.parse(inputSource);
             doc.getDocumentElement().normalize();
-            NodeList workNodes = doc.getElementsByTagName("work");
+            final NodeList workNodes = doc.getElementsByTagName("work");
             for (int i = 0; i < workNodes.getLength(); i++) {
-                Book book = new Book();
-                Author author = new Author();
-                Element work = (Element) workNodes.item(i);
+                final Book book = new Book();
+                final Author author = new Author();
+                final Element work = (Element) workNodes.item(i);
                 book.setRating(Float.parseFloat(work.getElementsByTagName("average_rating").item(0).getChildNodes()
                         .item(0).getNodeValue()));
-                NodeList bestBook = work.getElementsByTagName("best_book");
+                final NodeList bestBook = work.getElementsByTagName("best_book");
                 for (int j = 0; j < bestBook.getLength(); j++) {//simple cases one author< one image
-                    Element bestBookNode = (Element) bestBook.item(j);
+                    final Element bestBookNode = (Element) bestBook.item(j);
 
                     book.setTitle(bestBookNode.getElementsByTagName("title").item(0).getChildNodes().item(0)
                             .getNodeValue());
                     book.setId(Long.parseLong(bestBookNode.getElementsByTagName("id").item(0).getChildNodes().item(0)
                             .getNodeValue()));
-                    Element authorXML = (Element) bestBookNode.getElementsByTagName("author").item(0);
+                    final Element authorXML = (Element) bestBookNode.getElementsByTagName("author").item(0);
                     author.setName(authorXML.getElementsByTagName("name").item(0).getFirstChild().getNodeValue());
                     author.setId(Long.parseLong(authorXML.getElementsByTagName("id").item(0).getFirstChild()
                             .getNodeValue()));
@@ -103,7 +102,7 @@ public class XMLHelper {
             }).start();
 */
             return books;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             Log.d("Exception", e.getMessage());
         }
         return null;

@@ -8,9 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
 
 import com.example.ajax.myapplication.database.annotations.Table;
+import com.example.ajax.myapplication.database.annotations.fields.dbFloat;
 import com.example.ajax.myapplication.database.annotations.fields.dbLong;
 import com.example.ajax.myapplication.database.annotations.fields.dbString;
-import com.example.ajax.myapplication.loader.DiskLruCache;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -18,17 +18,13 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Created by Ajax on 01.11.2016.
- */
-
 public class DBHelper extends SQLiteOpenHelper implements IDBOperation {
 
     private static final String SQL_TABLE_CREATE_TEMPLATE = "CREATE TABLE IF NOT EXISTS %s (%s);";
     private static final String SQL_TABLE_CREATE_FIELD_TEMPLATE = "%s %s";
     private static final String DATABASE = "bookDB";
 
-    public DBHelper(Context context, SQLiteDatabase.CursorFactory factory, int version) {
+    public DBHelper(final Context context, final SQLiteDatabase.CursorFactory factory, final int version) {
         super(context, DATABASE, factory, version);
 
     }
@@ -43,7 +39,6 @@ public class DBHelper extends SQLiteOpenHelper implements IDBOperation {
             return null;
         }
     }
-
 
     @Nullable
     private static String getTableCreateQuery(final Class<?> clazz) {
@@ -68,6 +63,8 @@ public class DBHelper extends SQLiteOpenHelper implements IDBOperation {
                             type = ((dbLong) annotation).value();
                         } else if (annotation instanceof dbString) {
                             type = ((dbString) annotation).value();
+                        } else if (annotation instanceof dbFloat) {
+                            type = ((dbFloat) annotation).value();
                         }
                     }
 
@@ -93,7 +90,7 @@ public class DBHelper extends SQLiteOpenHelper implements IDBOperation {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
+    public void onCreate(final SQLiteDatabase db) {
         for (final Class<?> clazz : Contract.MODELS) {
             final String sql = getTableCreateQuery(clazz);
 
@@ -104,19 +101,19 @@ public class DBHelper extends SQLiteOpenHelper implements IDBOperation {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
 
     }
 
     @Override
-    public Cursor query(String sql, String... args) {
+    public Cursor query(final String sql, final String... args) {
         final SQLiteDatabase database = getReadableDatabase();
 
         return database.rawQuery(sql, args);
     }
 
     @Override
-    public long insert(Class<?> table, ContentValues values) {
+    public long insert(final Class<?> table, final ContentValues values) {
         final String name = getTableName(table);
 
         if (name != null) {
@@ -140,7 +137,7 @@ public class DBHelper extends SQLiteOpenHelper implements IDBOperation {
     }
 
     @Override
-    public int bulkInsert(Class<?> table, List<ContentValues> values) {
+    public int bulkInsert(final Class<?> table, final List<ContentValues> values) {
         final String name = getTableName(table);
 
         if (name != null) {
@@ -168,7 +165,7 @@ public class DBHelper extends SQLiteOpenHelper implements IDBOperation {
     }
 
     @Override
-    public int delete(Class<?> table, String sql, String... args) {
+    public int delete(final Class<?> table, final String sql, final String... args) {
         final String name = getTableName(table);
 
         if (name != null) {
@@ -191,7 +188,7 @@ public class DBHelper extends SQLiteOpenHelper implements IDBOperation {
         }
     }
 
-    public void insert(String query) {
+    public void insert(final String query) {
         final SQLiteDatabase database = getWritableDatabase();
         database.execSQL(query);
     }

@@ -5,4 +5,7 @@
     <string name="small_book_cover">Small book cover</string>
     <string name="genre">Genre</string>
     <string name="title">Title</string>
+    <string name="similar_books">Similar Books</string>
+    <string name="reviews">Reviews</string>
+    <string name="rated_id">rated id</string>
 </resources>

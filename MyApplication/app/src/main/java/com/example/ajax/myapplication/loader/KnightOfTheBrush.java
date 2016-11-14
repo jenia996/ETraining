@@ -10,7 +10,9 @@ public interface KnightOfTheBrush {
 
     void drawBitmap(final ImageView imageView, final String imageUrl);
 
-    class Impl {
+    void clearCache();
+
+    final class Impl {
 
         private static KnightOfTheBrush knightOfTheBrush;
 

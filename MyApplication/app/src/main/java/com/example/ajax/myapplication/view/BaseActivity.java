@@ -1,13 +1,12 @@
 package com.example.ajax.myapplication.view;
 
 import android.app.ProgressDialog;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 
-import com.example.ajax.myapplication.interfaces.BaseView;
 import com.example.ajax.myapplication.interfaces.MainView;
 
 public abstract class BaseActivity extends AppCompatActivity implements MainView {
+
     public ProgressDialog mProgressDialog;
 
     @Override

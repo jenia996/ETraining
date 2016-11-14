@@ -5,11 +5,7 @@ import android.database.Cursor;
 
 import java.util.List;
 
-/**
- * Created by Ajax on 31.10.2016.
- */
-
-public interface IDBOperation {
+interface IDBOperation {
 
     Cursor query(String sql, String... args);
 

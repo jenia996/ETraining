@@ -6,24 +6,20 @@ import com.example.ajax.myapplication.database.annotations.fields.dbString;
 
 import java.util.List;
 
-/**
- * Created by Ajax on 31.10.2016.
- */
 @Table(name = "AUTHORS")
 public class Author {
-    @dbLong
-    Long id;
-
-    @dbString
-    String mName;
 
     List<Book> mBooks;
+    @dbLong
+    private Long id;
+    @dbString
+    private String mName;
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -31,7 +27,7 @@ public class Author {
         return mName;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         mName = name;
     }
 }

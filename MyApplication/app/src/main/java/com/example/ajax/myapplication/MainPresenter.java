@@ -3,6 +3,7 @@ package com.example.ajax.myapplication;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.example.HttpClient;
 import com.example.ajax.myapplication.download.OnResultCallback;
 import com.example.ajax.myapplication.download.impl.Loader;
 import com.example.ajax.myapplication.interfaces.BasePresenter;
@@ -16,12 +17,12 @@ import java.util.List;
 
 class MainPresenter implements BasePresenter {
     private final LoadParseOpearion mLoadParseOpearion;
-    private MainView view;
-    private Handler handler;
+    private final MainView view;
+    private final Handler handler;
     private String lastRequest;
-    private Loader mLoader;
+    private final Loader mLoader;
 
-    MainPresenter(MainActivity view) {
+    MainPresenter(final MainView view) {
         this.view = view;
         handler = new Handler(Looper.getMainLooper());
         mLoader = new Loader();
@@ -32,29 +33,29 @@ class MainPresenter implements BasePresenter {
 
         mLoader.execute(mLoadParseOpearion, new PageData(query, 1), new OnResultCallback<List<Book>, Void>() {
             @Override
-            public void onSucess(List<Book> books) {
+            public void onSucess(final List<Book> books) {
                 view.showResponce(books);
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onError(final Exception e) {
 
             }
 
             @Override
-            public void onProgressChange(Void aVoid) {
+            public void onProgressChange(final Void aVoid) {
 
             }
         });
-      /*  new Thread() {
+        new Thread() {
             @Override
             public void run() {
-                String result = HttpClient.get("https://www.goodreads.com/search/index" + "" +
+                final String result = HttpClient.get("https://www.goodreads.com/search/index" + "" +
                         ".xml?key=zKxs0huf91EZnEjZNpYg&q=" + query);
-                XMLHelper helper = XMLHelper.getInstance();
+                final XMLHelper helper = XMLHelper.getInstance();
                 notifyResponse(helper.parse(result));
             }
-        }.start();*/
+        }.start();
     }
 
     private void notifyError(final IOException e) {
@@ -90,11 +91,11 @@ class MainPresenter implements BasePresenter {
         });
     }
 
-    private String encode(String param) {
+    private String encode(final String param) {
         String encoded = "";
         try {
             encoded = URLEncoder.encode(param, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
+        } catch (final UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return encoded;
@@ -104,33 +105,33 @@ class MainPresenter implements BasePresenter {
     public void update(final int page) {
         mLoader.execute(mLoadParseOpearion, new PageData(lastRequest, page), new OnResultCallback<List<Book>, Void>() {
             @Override
-            public void onSucess(List<Book> books) {
+            public void onSucess(final List<Book> books) {
                 view.showResponce(books);
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onError(final Exception e) {
 
             }
 
             @Override
-            public void onProgressChange(Void aVoid) {
+            public void onProgressChange(final Void aVoid) {
 
             }
         });
-  /*      new Thread() {
+        new Thread() {
             @Override
             public void run() {
-                String result = HttpClient.get("https://www.goodreads.com/search/index" + "" +
-                        ".xml?key=zKxs0huf91EZnEjZNpYg&q=" + lastRequest + "&page=" + String.valueOf(page));
-                XMLHelper helper = XMLHelper.getInstance();
+                final String result = HttpClient.get("https://www.goodreads.com/search/index" + "" +
+                        ".xml?key=zKxs0huf91EZnEjZNpYg&q=" + lastRequest + "&page=" + page);
+                final XMLHelper helper = XMLHelper.getInstance();
                 notifyResponse(helper.parse(result));
             }
-        }.start();*/
+        }.start();
     }
 
     @Override
-    public void download(String query) {
+    public void download(final String query) {
         lastRequest = encode(query);
         loadData(lastRequest);
     }
@@ -141,19 +142,4 @@ class MainPresenter implements BasePresenter {
 
     }
 
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void stop() {
-
-    }
-
-    @Override
-    public void destroy() {
-
-    }
 }

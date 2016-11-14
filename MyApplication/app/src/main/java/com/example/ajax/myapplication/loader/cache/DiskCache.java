@@ -1,9 +1,12 @@
-package com.example.ajax.myapplication.loader;
+package com.example.ajax.myapplication.loader.cache;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Environment;
+
+import com.example.ajax.myapplication.loader.BitmapProcessor;
+import com.example.ajax.myapplication.loader.HashHelper;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -35,7 +38,7 @@ public class DiskCache {
         return diskCache;
     }
 
-    public void requestInit(Context context) {
+    public void requestInit(final Context context) {
         this.context = context;
 
         bitmapProcessor = new BitmapProcessor();
@@ -46,7 +49,7 @@ public class DiskCache {
     private void init() throws IOException {
         synchronized (mDiskCacheLock) {
             if (mDiskLruCache == null || mDiskLruCache.isClosed()) {
-                File cacheDir = getDiskCacheDir(context, DISK_CACHE_SUBDIR);
+                final File cacheDir = getDiskCacheDir(context, DISK_CACHE_SUBDIR);
 
                 if (!cacheDir.exists()) {
                     cacheDir.mkdir();
@@ -64,7 +67,7 @@ public class DiskCache {
         }
     }
 
-    private File getDiskCacheDir(Context context, String diskCacheSubdir) {
+    private File getDiskCacheDir(final Context context, final String diskCacheSubdir) {
 
         final String cachePath = Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ||
                 !Environment.isExternalStorageRemovable() ? context.getExternalCacheDir().getPath() : context
@@ -86,7 +89,7 @@ public class DiskCache {
 
 
                 try {
-                    DiskLruCache.Snapshot snapshot = mDiskLruCache.get(cacheKey);
+                    final DiskLruCache.Snapshot snapshot = mDiskLruCache.get(cacheKey);
 
                     if (snapshot == null) {
                         final DiskLruCache.Editor editor = mDiskLruCache.edit(cacheKey);
@@ -102,13 +105,13 @@ public class DiskCache {
                     } else {
                         snapshot.getInputStream(DISK_CACHE_INDEX).close();
                     }
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
                 } finally {
                     if (out != null) {
                         try {
                             out.close();
-                        } catch (IOException e) {
+                        } catch (final IOException e) {
                             e.printStackTrace();
                         }
                     }
@@ -126,7 +129,7 @@ public class DiskCache {
             while (mDiskCacheStarting) {
                 try {
                     mDiskCacheLock.wait();
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -142,18 +145,18 @@ public class DiskCache {
                         inputStream = snapshot.getInputStream(DISK_CACHE_INDEX);
 
                         if (inputStream != null) {
-                            FileDescriptor fd = ((FileInputStream) inputStream).getFD();
+                            final FileDescriptor fd = ((FileInputStream) inputStream).getFD();
 
                             bitmap = bitmapProcessor.decodeSampledBitmapFromDescriptor(fd);
                         }
                     }
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
                 } finally {
                     if (inputStream != null) {
                         try {
                             inputStream.close();
-                        } catch (IOException e) {
+                        } catch (final IOException e) {
                             e.printStackTrace();
                         }
                     }
@@ -168,12 +171,12 @@ public class DiskCache {
         new DiskCacheTask(this).execute(DiskCacheTask.FLUSH);
     }
 
-    public void flush() {
+    private void flush() {
         synchronized (mDiskCacheLock) {
             if (mDiskLruCache != null) {
                 try {
                     mDiskLruCache.flush();
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -184,14 +187,14 @@ public class DiskCache {
         new DiskCacheTask(this).execute(DiskCacheTask.CLOSE);
     }
 
-    public void close() {
+    private void close() {
         synchronized (mDiskCacheLock) {
             if (mDiskLruCache != null) {
                 if (!mDiskLruCache.isClosed()) {
                     try {
                         mDiskLruCache.close();
                         mDiskLruCache = null;
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         e.printStackTrace();
                     }
                 }
@@ -211,7 +214,7 @@ public class DiskCache {
                 try {
                     mDiskLruCache.delete();
 
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
                 }
 
@@ -225,19 +228,19 @@ public class DiskCache {
         static final int FLUSH = 2;
         static final int CLOSE = 3;
         static final int TEAR_DOWN = 4;
-        private DiskCache diskCache;
+        private final DiskCache diskCache;
 
-        DiskCacheTask(DiskCache diskCache) {
+        DiskCacheTask(final DiskCache diskCache) {
             this.diskCache = diskCache;
         }
 
         @Override
-        protected Void doInBackground(Integer... params) {
+        protected Void doInBackground(final Integer... params) {
             switch (params[0]) {
                 case INIT:
                     try {
                         diskCache.init();
-                    } catch (IOException e) {
+                    } catch (final IOException e) {
                         e.printStackTrace();
                     }
                     break;

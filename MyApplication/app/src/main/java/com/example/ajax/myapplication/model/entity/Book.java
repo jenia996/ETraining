@@ -5,11 +5,9 @@ import com.example.ajax.myapplication.database.annotations.fields.dbFloat;
 import com.example.ajax.myapplication.database.annotations.fields.dbLong;
 import com.example.ajax.myapplication.database.annotations.fields.dbString;
 
-/**
- * Created by Ajax on 14.10.2016.
- */
 @Table(name = "BOOKS")
 public class Book {
+
     @dbLong
     private Long id;
     @dbString
@@ -29,7 +27,7 @@ public class Book {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(final float rating) {
         this.rating = rating;
     }
 
@@ -37,7 +35,7 @@ public class Book {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(final Long id) {
         this.id = id;
     }
 
@@ -45,7 +43,7 @@ public class Book {
         return authorId;
     }
 
-    public void setAuthorId(Author authorId) {
+    public void setAuthorId(final Author authorId) {
         this.authorId = authorId;
     }
 
@@ -53,7 +51,7 @@ public class Book {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         this.title = title;
     }
 
@@ -61,7 +59,7 @@ public class Book {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(final String image) {
         this.image = image;
     }
 }

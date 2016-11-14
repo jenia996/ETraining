@@ -10,18 +10,19 @@ import com.example.ajax.myapplication.download.OnResultCallback;
 import com.example.ajax.myapplication.download.OwnAsyncTask;
 import com.example.ajax.myapplication.download.ProgressCallback;
 import com.example.ajax.myapplication.download.impl.Loader;
+import com.example.ajax.myapplication.loader.cache.DiskCache;
+import com.example.ajax.myapplication.loader.cache.MemCache;
 import com.example.ajax.myapplication.utils.ContextHolder;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 class KnightOfTheBrushImpl implements KnightOfTheBrush {
-    private static final String TAG = "KnightOfTheBrush";
+
     private final MemCache memCache;
-    private final Object mDiskCacheLock = new Object();
-    private DiskCache mDiskCache;
-    private Loader loader = new Loader();
-    private BitmapOperation bitmapOperation;
+    private final DiskCache mDiskCache;
+    private final Loader loader = new Loader();
+    private final BitmapOperation bitmapOperation;
 
     KnightOfTheBrushImpl() {
         memCache = new MemCache();
@@ -30,8 +31,12 @@ class KnightOfTheBrushImpl implements KnightOfTheBrush {
         bitmapOperation = new BitmapOperation();
     }
 
+    public void clearCache() {
+        memCache.clear();
+    }
+
     @Override
-    public void drawBitmap(ImageView imageView, final String imageUrl) {
+    public void drawBitmap(final ImageView imageView, final String imageUrl) {
         synchronized (memCache) {
             final Bitmap bitmap = memCache.get(imageUrl);
 
@@ -48,13 +53,14 @@ class KnightOfTheBrushImpl implements KnightOfTheBrush {
 
         loader.execute(bitmapOperation, new ImageData(imageUrl, imageView.getLayoutParams().width, imageView
                 .getLayoutParams().height), new BitmapResultCallback(imageView, imageUrl) {
+
             @Override
-            public void onError(Exception e) {
+            public void onError(final Exception e) {
                 super.onError(e);
             }
 
             @Override
-            public void onSucess(Bitmap bitmap) {
+            public void onSucess(final Bitmap bitmap) {
                 if (bitmap != null) {
                     mDiskCache.addBitmapToDiskCache(imageUrl, bitmap);
                 }
@@ -68,15 +74,15 @@ class KnightOfTheBrushImpl implements KnightOfTheBrush {
             }
         });
 
-
     }
 
     private static class ImageData {
+
         String url;
         int width;
         int height;
 
-        public ImageData(String url, int width, int height) {
+        ImageData(final String url, final int width, final int height) {
             this.url = url;
             this.width = width;
             this.height = height;
@@ -87,20 +93,19 @@ class KnightOfTheBrushImpl implements KnightOfTheBrush {
 
         private static final String TAG = BitmapResultCallback.class.getSimpleName();
         private final WeakReference<ImageView> imageView;
-        private String value;
+        private final String value;
 
-
-        BitmapResultCallback(ImageView imageView, String value) {
+        BitmapResultCallback(final ImageView imageView, final String value) {
             this.imageView = new WeakReference<>(imageView);
             imageView.setTag(value);
             this.value = value;
         }
 
         @Override
-        public void onSucess(Bitmap bitmap) {
-            ImageView imageView = this.imageView.get();
+        public void onSucess(final Bitmap bitmap) {
+            final ImageView imageView = this.imageView.get();
             if (imageView != null) {
-                Object tag = imageView.getTag();
+                final Object tag = imageView.getTag();
                 if (tag != null && tag.equals(value)) {
                     imageView.setImageBitmap(bitmap);
                 }
@@ -108,19 +113,19 @@ class KnightOfTheBrushImpl implements KnightOfTheBrush {
         }
 
         @Override
-        public void onError(Exception e) {
+        public void onError(final Exception e) {
             Log.d(TAG, e.getMessage());
         }
 
         @Override
-        public void onProgressChange(Void aVoid) {
+        public void onProgressChange(final Void aVoid) {
 
         }
     }
 
     private static class BitmapOperation implements OwnAsyncTask<ImageData, Void, Bitmap> {
 
-        static Bitmap decode(byte[] bytes, int reqWidth, int reqHeight) {
+        static Bitmap decode(final byte[] bytes, final int reqWidth, final int reqHeight) {
 
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
@@ -132,7 +137,7 @@ class KnightOfTheBrushImpl implements KnightOfTheBrush {
             return BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options);
         }
 
-        private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        private static int calculateInSampleSize(final BitmapFactory.Options options, final int reqWidth, final int reqHeight) {
 
             final int height = options.outHeight;
             final int width = options.outWidth;
@@ -152,8 +157,8 @@ class KnightOfTheBrushImpl implements KnightOfTheBrush {
         }
 
         @Override
-        public Bitmap doInBackground(ImageData imageData, ProgressCallback<Void> progressCallback) throws IOException {
-            byte[] image = HttpClient.getByteArray(imageData.url);
+        public Bitmap doInBackground(final ImageData imageData, final ProgressCallback<Void> progressCallback) throws IOException {
+            final byte[] image = HttpClient.getByteArray(imageData.url);
             return decode(image, imageData.width, imageData.height);
         }
     }

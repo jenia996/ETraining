@@ -12,11 +12,8 @@ import com.example.ajax.myapplication.loader.KnightOfTheBrush;
 import com.example.ajax.myapplication.model.entity.Book;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-
-/**
- * Created by Ajax on 21.10.2016.
- */
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
@@ -28,13 +25,13 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_book_item, parent, false);
+    public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
+        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_book_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         final Book book = books.get(position);
         holder.title.setText(book.getTitle());
@@ -48,23 +45,23 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         return books.size();
     }
 
-    public void setBooks(List<Book> response) {
+    public void setBooks(final List<Book> response) {
         books = new ArrayList<>(response);
     }
 
-    public void addBooks(List<Book> response) {
+    public void addBooks(final Collection<Book> response) {
         books.addAll(response);
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        private View container;
-        private TextView title;
-        private TextView author;
-        private TextView rating;
-        private ImageView cover;
+    class ViewHolder extends RecyclerView.ViewHolder {
+        private final View container;
+        private final TextView title;
+        private final TextView author;
+        private final TextView rating;
+        private final ImageView cover;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(final View itemView) {
             super(itemView);
             container = itemView.findViewById(R.id.book_item_container);
             title = (TextView) itemView.findViewById(R.id.book_title);
