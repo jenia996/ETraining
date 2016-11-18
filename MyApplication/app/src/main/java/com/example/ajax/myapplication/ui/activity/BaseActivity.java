@@ -1,11 +1,11 @@
-package com.example.ajax.myapplication.view;
+package com.example.ajax.myapplication.ui.activity;
 
 import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;
 
-import com.example.ajax.myapplication.interfaces.MainView;
+import com.example.ajax.myapplication.mvp.BaseView;
 
-public abstract class BaseActivity extends AppCompatActivity implements MainView {
+public abstract class BaseActivity extends AppCompatActivity implements BaseView {
 
     public ProgressDialog mProgressDialog;
 

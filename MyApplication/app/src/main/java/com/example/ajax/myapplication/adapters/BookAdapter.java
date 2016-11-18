@@ -1,4 +1,4 @@
-package com.example.ajax.myapplication.view.adapters.impl;
+package com.example.ajax.myapplication.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

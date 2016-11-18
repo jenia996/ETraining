@@ -4,9 +4,10 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <ImageButton
+    <ImageView
         android:id="@+id/book_cover"
         android:layout_width="80dp"
+        android:layout_gravity="center"
         android:layout_height="120dp"/>
 
     <TextView
@@ -14,6 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:layout_gravity="center"
         android:textColor="@android:color/black"
         android:textSize="18sp"/>
 
@@ -21,6 +23,7 @@
         android:id="@+id/author_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:textColor="@android:color/holo_blue_light"/>
 
     <RatingBar
@@ -28,9 +31,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:isIndicator="true"
+        android:layout_gravity="center"
         android:numStars="5"/>
 
     <RelativeLayout
+
         android:layout_width="match_parent"
         android:layout_height="100dp">
 
@@ -50,15 +55,4 @@
 
     </RelativeLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/reviews"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/reviews"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="8dp"/>
 </LinearLayout>
