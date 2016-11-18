@@ -6,11 +6,14 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import javax.net.ssl.HttpsURLConnection;
+
 public class HttpClient {
-    public static byte[] getByteArray(String adress) throws IOException {
-        InputStream inputStream = getStream(adress);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(inputStream.available());
-        byte[] chunk = new byte[1 << 16];
+
+    public static byte[] getByteArray(final String adress) throws IOException {
+        final InputStream inputStream = getStream(adress);
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream(inputStream.available());
+        final byte[] chunk = new byte[1 << 16];
         int bytesRead;
         while ((bytesRead = inputStream.read(chunk)) > 0) {
             outputStream.write(chunk, 0, bytesRead);
@@ -19,30 +22,29 @@ public class HttpClient {
         return outputStream.toByteArray();
     }
 
-    public static String get(String address) {
+    public static String get(final String address) {
         try {
-            URL url = new URL(address);
-            HttpURLConnection connection = ((HttpURLConnection) url.openConnection());
-            InputStream inputStream = connection.getInputStream();
-            ByteArrayOutputStream result = new ByteArrayOutputStream();
-            byte[] buffer = new byte[inputStream.available()];
-            int lenght;
-            while ((lenght = inputStream.read(buffer)) != -1) {
-                result.write(buffer, 0, lenght);
+            final URL url = new URL(address);
+            final HttpsURLConnection connection = ((HttpsURLConnection) url.openConnection());
+            final InputStream inputStream = connection.getInputStream();
+            final ByteArrayOutputStream result = new ByteArrayOutputStream();
+            final byte[] buffer = new byte[Math.max(inputStream.available(), 1 << 16)];
+            int length;
+            while ((length = inputStream.read(buffer)) != -1) {
+                result.write(buffer, 0, length);
             }
             inputStream.close();
-
             return result.toString();
 
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
         return "Error";
     }
 
-    public static InputStream getStream(String address) throws IOException {
-        URL url = new URL(address);
-        HttpURLConnection connection = ((HttpURLConnection) url.openConnection());
+    public static InputStream getStream(final String address) throws IOException {
+        final URL url = new URL(address);
+        final HttpURLConnection connection = ((HttpURLConnection) url.openConnection());
         return connection.getInputStream();
     }
 }

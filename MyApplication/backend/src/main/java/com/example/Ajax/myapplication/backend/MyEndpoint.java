@@ -25,7 +25,7 @@ import javax.inject.Named;
                 packagePath = ""))
 public class MyEndpoint {
 
-    public static final String STATS_URL = "https://dl.dropboxusercontent" +
+    private static final String STATS_URL = "https://dl.dropboxusercontent" +
             ".com/u/20755008/response" + ".json";
 
     /**
@@ -34,8 +34,8 @@ public class MyEndpoint {
 
 
     @ApiMethod(name = "sayHi")
-    public MyBean sayHi(@Named("name") String name) {
-        MyBean response = new MyBean();
+    public MyBean sayHi(@Named("name") final String name) {
+        final MyBean response = new MyBean();
         response.setData("Hi, " + name);
 
         return response;
@@ -43,19 +43,19 @@ public class MyEndpoint {
 
     @ApiMethod(name = "getStats")
     public MyBean getStats() {
-        MyBean mean = new MyBean();
-        String data = HttpClient.get(STATS_URL);
+        final MyBean mean = new MyBean();
+        final String data = HttpClient.get(STATS_URL);
         mean.setData(data);
         return mean;
     }
 
     @ApiMethod(name = "GetAuthorInfoById")
-    public MyBean AuthorInfo(@Named("api") String api, @Named("apikey") String key, @Named("id")
-            Integer authorId) {
-        MyBean bean = new MyBean();
-        String request = api + "/author/list/" + String.valueOf(authorId) + "?" + "format=xml&" +
+    public MyBean AuthorInfo(@Named("api") final String api, @Named("apikey") final String key, @Named("id") final
+    Integer authorId) {
+        final MyBean bean = new MyBean();
+        final String request = api + "/author/list/" + authorId + "?" + "format=xml&" +
                 "key=" + key;
-        String data = HttpClient.get(request);
+        final String data = HttpClient.get(request);
         bean.setData(data);
         return bean;
     }

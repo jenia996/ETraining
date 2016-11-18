@@ -8,4 +8,7 @@
     <string name="similar_books">Similar Books</string>
     <string name="reviews">Reviews</string>
     <string name="rated_id">rated id</string>
+    <string name="updates">Updates</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
