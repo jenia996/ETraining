@@ -1,7 +1,7 @@
 package com.example.ajax.myapplication.database;
 
-import com.example.ajax.myapplication.model.entity.Author;
-import com.example.ajax.myapplication.model.entity.Book;
+import com.example.ajax.myapplication.model.Author;
+import com.example.ajax.myapplication.model.Book;
 
 final class Contract {
 

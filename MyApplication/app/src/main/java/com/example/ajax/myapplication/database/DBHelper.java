@@ -11,6 +11,7 @@ import com.example.ajax.myapplication.database.annotations.Table;
 import com.example.ajax.myapplication.database.annotations.fields.dbFloat;
 import com.example.ajax.myapplication.database.annotations.fields.dbLong;
 import com.example.ajax.myapplication.database.annotations.fields.dbString;
+import com.example.ajax.myapplication.utils.Constants;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -22,10 +23,10 @@ public class DBHelper extends SQLiteOpenHelper implements IDBOperation {
 
     private static final String SQL_TABLE_CREATE_TEMPLATE = "CREATE TABLE IF NOT EXISTS %s (%s);";
     private static final String SQL_TABLE_CREATE_FIELD_TEMPLATE = "%s %s";
-    private static final String DATABASE = "bookDB";
+
 
     public DBHelper(final Context context, final SQLiteDatabase.CursorFactory factory, final int version) {
-        super(context, DATABASE, factory, version);
+        super(context, Constants.DATABASE, factory, version);
 
     }
 
