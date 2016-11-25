@@ -8,8 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ajax.myapplication.R;
-import com.example.ajax.myapplication.loader.KnightOfTheBrush;
-import com.example.ajax.myapplication.model.entity.Book;
+import com.example.ajax.myapplication.imageloader.KnightOfTheBrush;
+import com.example.ajax.myapplication.model.viewmodel.BookModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,27 +17,41 @@ import java.util.List;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
+    private OnItemCLickListener mItemCLickListener;
+    private List<BookModel> books;
 
-    private List<Book> books;
+    public BookAdapter(final OnItemCLickListener pItemCLickListener) {
+        this();
+        mItemCLickListener = pItemCLickListener;
+    }
 
-    public BookAdapter() {
+    private BookAdapter() {
         books = new ArrayList<>();
     }
 
     @Override
     public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_book_item, parent, false);
+        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.book_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        final Book book = books.get(position);
+        final BookModel book = books.get(position);
         holder.title.setText(book.getTitle());
-        holder.author.setText(book.getAuthorId().getName());
+        holder.author.setText(book.getAuthorName());
         holder.rating.setText(String.valueOf(book.getRating()));
-        KnightOfTheBrush.Impl.getInstance().drawBitmap(holder.cover, book.getImage());
+        KnightOfTheBrush.Impl.getInstance().drawBitmap(holder.cover, book.getImageUrl());
+        holder.container.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(final View v) {
+
+                mItemCLickListener.onClick(books.get((Integer) v.getTag()));
+            }
+        });
+        holder.container.setTag(position);
     }
 
     @Override
@@ -45,16 +59,21 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         return books.size();
     }
 
-    public void setBooks(final List<Book> response) {
+    public void setBooks(final List<BookModel> response) {
         books = new ArrayList<>(response);
     }
 
-    public void addBooks(final Collection<Book> response) {
+    public void addBooks(final Collection<BookModel> response) {
         books.addAll(response);
     }
 
+    public interface OnItemCLickListener {
+
+        void onClick(BookModel pBook);
+    }
 
     class ViewHolder extends RecyclerView.ViewHolder {
+
         private final View container;
         private final TextView title;
         private final TextView author;
