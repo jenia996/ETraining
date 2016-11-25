@@ -1,12 +1,12 @@
-package com.example.ajax.myapplication.loader.cache;
+package com.example.ajax.myapplication.imageloader.cache;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Environment;
 
-import com.example.ajax.myapplication.loader.BitmapProcessor;
-import com.example.ajax.myapplication.loader.HashHelper;
+import com.example.ajax.myapplication.imageloader.BitmapProcessor;
+import com.example.ajax.myapplication.imageloader.HashHelper;
 
 import java.io.File;
 import java.io.FileDescriptor;

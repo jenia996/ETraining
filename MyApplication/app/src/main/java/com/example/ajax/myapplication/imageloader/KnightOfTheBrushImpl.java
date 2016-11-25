@@ -1,4 +1,4 @@
-package com.example.ajax.myapplication.loader;
+package com.example.ajax.myapplication.imageloader;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,8 +10,8 @@ import com.example.ajax.myapplication.download.OnResultCallback;
 import com.example.ajax.myapplication.download.OwnAsyncTask;
 import com.example.ajax.myapplication.download.ProgressCallback;
 import com.example.ajax.myapplication.download.impl.Loader;
-import com.example.ajax.myapplication.loader.cache.DiskCache;
-import com.example.ajax.myapplication.loader.cache.MemCache;
+import com.example.ajax.myapplication.imageloader.cache.DiskCache;
+import com.example.ajax.myapplication.imageloader.cache.MemCache;
 import com.example.ajax.myapplication.utils.ContextHolder;
 
 import java.io.IOException;

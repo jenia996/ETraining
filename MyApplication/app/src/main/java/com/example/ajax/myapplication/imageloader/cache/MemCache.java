@@ -1,4 +1,4 @@
-package com.example.ajax.myapplication.loader.cache;
+package com.example.ajax.myapplication.imageloader.cache;
 
 import android.graphics.Bitmap;
 import android.util.LruCache;

@@ -1,4 +1,4 @@
-package com.example.ajax.myapplication.loader;
+package com.example.ajax.myapplication.imageloader;
 
 import java.security.MessageDigest;
 
