@@ -3,9 +3,6 @@ package com.example.ajax.myapplication.utils;
 
 import android.content.Context;
 
-/**
- * Created by Ajax on 21.10.2016.
- */
 
 public enum ContextHolder {
 

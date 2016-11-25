@@ -2,7 +2,7 @@ package com.example.ajax.myapplication;
 
 import android.app.Application;
 
-import com.example.ajax.myapplication.loader.KnightOfTheBrush;
+import com.example.ajax.myapplication.imageloader.KnightOfTheBrush;
 import com.example.ajax.myapplication.utils.ContextHolder;
 
 public class App extends Application {
@@ -17,4 +17,5 @@ public class App extends Application {
         super.onLowMemory();
         KnightOfTheBrush.Impl.getInstance().clearCache();
     }
+
 }
