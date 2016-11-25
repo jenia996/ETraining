@@ -5,10 +5,10 @@ import android.os.Looper;
 
 import com.example.ajax.myapplication.PageData;
 import com.example.ajax.myapplication.download.OnResultCallback;
-import com.example.ajax.myapplication.download.impl.LoadParseOpearion;
+import com.example.ajax.myapplication.download.impl.LoadParseOperation;
 import com.example.ajax.myapplication.download.impl.Loader;
-import com.example.ajax.myapplication.model.entity.Book;
-import com.example.ajax.myapplication.mvp.SearchView;
+import com.example.ajax.myapplication.model.viewmodel.BookModel;
+import com.example.ajax.myapplication.mvp.ResultView;
 import com.example.ajax.myapplication.mvp.SearchBookPresenter;
 
 import java.io.IOException;
@@ -18,17 +18,17 @@ import java.util.List;
 
 public class SearchPresenter implements SearchBookPresenter {
 
-    private final LoadParseOpearion mLoadParseOpearion;
-    private final SearchView view;
+    private final LoadParseOperation mLoadParseOperation;
+    private final ResultView view;
     private final Handler handler;
     private final Loader mLoader;
     private String lastRequest;
 
-    public SearchPresenter(final SearchView view) {
+    public SearchPresenter(final ResultView view) {
         this.view = view;
         handler = new Handler(Looper.getMainLooper());
         mLoader = new Loader();
-        mLoadParseOpearion = new LoadParseOpearion();
+        mLoadParseOperation = new LoadParseOperation();
     }
 
     @Override
@@ -42,18 +42,12 @@ public class SearchPresenter implements SearchBookPresenter {
         loadData(lastRequest, 1);
     }
 
-    @Override
-    public void onReady() {
-        view.showProgressDialog();
-
-    }
-
     private void loadData(final String query, final int page) {
 
-        mLoader.execute(mLoadParseOpearion, new PageData(query, page), new OnResultCallback<List<Book>, Void>() {
+        mLoader.execute(mLoadParseOperation, new PageData(query, page), new OnResultCallback<List<BookModel>, Void>() {
 
             @Override
-            public void onSucess(final List<Book> books) {
+            public void onSucess(final List<BookModel> books) {
                 notifyResponse(books);
                 ;
             }
@@ -81,7 +75,7 @@ public class SearchPresenter implements SearchBookPresenter {
         });
     }
 
-    private void notifyResponse(final List<Book> response) {
+    private void notifyResponse(final List<BookModel> response) {
         handler.post(new Runnable() {
 
             @Override

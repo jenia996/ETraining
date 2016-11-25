@@ -1,5 +1,6 @@
 package com.example.ajax.myapplication.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,17 +14,15 @@ import android.view.ViewGroup;
 
 import com.example.ajax.myapplication.R;
 import com.example.ajax.myapplication.adapters.BookAdapter;
-import com.example.ajax.myapplication.model.entity.Book;
-import com.example.ajax.myapplication.mvp.SearchView;
+import com.example.ajax.myapplication.model.viewmodel.BookModel;
+import com.example.ajax.myapplication.mvp.ResultView;
 import com.example.ajax.myapplication.mvp.presenter.SearchPresenter;
+import com.example.ajax.myapplication.ui.activity.BookTitleCardActivity;
+import com.example.ajax.myapplication.utils.Constants;
 
 import java.util.List;
 
-/**
- * Created by Ajax on 18.11.2016.
- */
-
-public class SearchFragment extends BaseFragment implements SearchView {
+public class SearchFragment extends BaseFragment implements ResultView<List<BookModel>> {
 
     private SearchPresenter mPresenter;
     private boolean mNewRequest;
@@ -74,7 +73,7 @@ public class SearchFragment extends BaseFragment implements SearchView {
         super.onCreate(savedInstanceState);
 
         mPresenter = new SearchPresenter(this);
-        mAdapter = new BookAdapter();
+        mAdapter = new BookAdapter(createOnItemClickListener());
 
         setRetainInstance(true);
         setHasOptionsMenu(true);
@@ -136,7 +135,7 @@ public class SearchFragment extends BaseFragment implements SearchView {
     }
 
     @Override
-    public void showResponse(final List<Book> response) {
+    public void showResponse(final List<BookModel> response) {
         hideProgressDialog();
         if (mNewRequest) {
             mAdapter.setBooks(response);
@@ -146,5 +145,17 @@ public class SearchFragment extends BaseFragment implements SearchView {
         }
         mAdapter.notifyDataSetChanged();
 
+    }
+
+    private BookAdapter.OnItemCLickListener createOnItemClickListener() {
+        return new BookAdapter.OnItemCLickListener() {
+
+            @Override
+            public void onClick(final BookModel pBook) {
+                final Intent intent = new Intent(getContext(), BookTitleCardActivity.class);
+                intent.putExtra(Constants.BOOK_EXTRA, pBook);
+                startActivity(intent);
+            }
+        };
     }
 }
