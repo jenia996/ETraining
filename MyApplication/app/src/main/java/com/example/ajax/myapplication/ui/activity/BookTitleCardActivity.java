@@ -34,6 +34,7 @@ public class BookTitleCardActivity extends BaseActivity implements ResultView<Li
         setContentView(R.layout.activity_book_title_card);
         final BookModel book = getIntent().getParcelableExtra(Constants.BOOK_EXTRA);
         final ImageView cover = (ImageView) findViewById(R.id.book_cover);
+        //TODO fix static dependency injection google it
         KnightOfTheBrush.Impl.getInstance().drawBitmap(cover, book.getImageUrl());
         final TextView author = (TextView) findViewById(R.id.author_name);
         final TextView title = (TextView) findViewById(R.id.book_title);

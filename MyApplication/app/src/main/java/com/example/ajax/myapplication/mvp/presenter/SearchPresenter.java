@@ -101,6 +101,7 @@ public class SearchPresenter implements SearchBookPresenter {
         try {
             encoded = URLEncoder.encode(param, "UTF-8");
         } catch (final UnsupportedEncodingException e) {
+            //TODO throw new IlleagalArgumentException
             e.printStackTrace();
         }
         return encoded;
