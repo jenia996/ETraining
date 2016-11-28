@@ -35,7 +35,7 @@ public class BookPresenter implements BasePresenter {
         mLoader.execute(mLoadParseOperation, new PageData(query, 1), new OnResultCallback<List<BookModel>, Void>() {
 
             @Override
-            public void onSucess(final List<BookModel> books) {
+            public void onSuccess(final List<BookModel> books) {
                 notifyResponse(books);
                 ;
             }

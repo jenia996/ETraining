@@ -47,9 +47,8 @@ public class SearchPresenter implements SearchBookPresenter {
         mLoader.execute(mLoadParseOperation, new PageData(query, page), new OnResultCallback<List<BookModel>, Void>() {
 
             @Override
-            public void onSucess(final List<BookModel> books) {
+            public void onSuccess(final List<BookModel> books) {
                 notifyResponse(books);
-                ;
             }
 
             @Override

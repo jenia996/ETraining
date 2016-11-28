@@ -46,7 +46,7 @@ public class Loader {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            onResultCallback.onSucess(result);
+                            onResultCallback.onSuccess(result);
                         }
                     });
                 } catch (IOException e) {

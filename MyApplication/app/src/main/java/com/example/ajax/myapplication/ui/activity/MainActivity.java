@@ -9,6 +9,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.ScrollView;
 
 import com.example.ajax.myapplication.R;
 import com.example.ajax.myapplication.ui.fragment.SearchFragment;
@@ -42,7 +43,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

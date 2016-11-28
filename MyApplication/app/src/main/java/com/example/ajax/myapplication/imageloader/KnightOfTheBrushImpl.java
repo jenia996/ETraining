@@ -60,7 +60,7 @@ class KnightOfTheBrushImpl implements KnightOfTheBrush {
             }
 
             @Override
-            public void onSucess(final Bitmap bitmap) {
+            public void onSuccess(final Bitmap bitmap) {
                 if (bitmap != null) {
                     mDiskCache.addBitmapToDiskCache(imageUrl, bitmap);
                 }
@@ -70,7 +70,7 @@ class KnightOfTheBrushImpl implements KnightOfTheBrush {
                     }
                 }
 
-                super.onSucess(bitmap);
+                super.onSuccess(bitmap);
             }
         });
 
@@ -102,7 +102,7 @@ class KnightOfTheBrushImpl implements KnightOfTheBrush {
         }
 
         @Override
-        public void onSucess(final Bitmap bitmap) {
+        public void onSuccess(final Bitmap bitmap) {
             final ImageView imageView = this.imageView.get();
             if (imageView != null) {
                 final Object tag = imageView.getTag();
