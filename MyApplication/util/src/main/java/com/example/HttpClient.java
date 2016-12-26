@@ -22,27 +22,21 @@ public class HttpClient {
         return outputStream.toByteArray();
     }
 
-    public static String get(final String address) {
-        try {
-            final URL url = new URL(address);
-            final HttpsURLConnection connection = ((HttpsURLConnection) url.openConnection());
-            final InputStream inputStream = connection.getInputStream();
-            final ByteArrayOutputStream result = new ByteArrayOutputStream();
-            final byte[] buffer = new byte[Math.max(inputStream.available(), 1 << 16)];
-            int length;
-            while ((length = inputStream.read(buffer)) != -1) {
-                result.write(buffer, 0, length);
-            }
-            inputStream.close();
-            return result.toString();
-
-        } catch (final IOException e) {
-            e.printStackTrace();
+    public static String get(final String address) throws IOException {
+        final URL url = new URL(address);
+        final HttpsURLConnection connection = ((HttpsURLConnection) url.openConnection());
+        final InputStream inputStream = connection.getInputStream();
+        final ByteArrayOutputStream result = new ByteArrayOutputStream();
+        final byte[] buffer = new byte[Math.max(inputStream.available(), 1 << 16)];
+        int length;
+        while ((length = inputStream.read(buffer)) != -1) {
+            result.write(buffer, 0, length);
         }
-        return "Error";
+        inputStream.close();
+        return result.toString();
     }
 
-    public static InputStream getStream(final String address) throws IOException {
+    private static InputStream getStream(final String address) throws IOException {
         final URL url = new URL(address);
         final HttpURLConnection connection = ((HttpURLConnection) url.openConnection());
         return connection.getInputStream();

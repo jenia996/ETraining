@@ -12,6 +12,7 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
+        vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     flavorDimensions "paid", "locale"
@@ -26,11 +27,11 @@ android {
         }
         us {
             dimension "locale"
-            applicationId "com.example.Ajax.myapplication.usa"
+            applicationId "com.example.ajax.myapplication.usa"
         }
         china {
             dimension "locale"
-            applicationId "com.example.Ajax.myapplicaton.china"
+            applicationId "com.example.ajax.myapplicaton.china"
         }
     }
     buildTypes {
@@ -78,6 +79,5 @@ dependencies {
     compile 'com.google.code.findbugs:jsr305:2.0.1'
     compile 'com.google.code.gson:gson:2.7'
     testCompile 'junit:junit:4.12'
-    compile project(path: ':backend', configuration: 'android-endpoints')
     compile project(':util')
 }

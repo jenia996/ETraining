@@ -1,9 +1,11 @@
 package com.example.ajax.myapplication.ui.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -11,9 +13,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.example.ajax.myapplication.R;
-import com.example.ajax.myapplication.adapters.BookAdapter;
+import com.example.ajax.myapplication.adapters.OnItemClickListener;
+import com.example.ajax.myapplication.adapters.impl.BookAdapter;
 import com.example.ajax.myapplication.model.viewmodel.BookModel;
 import com.example.ajax.myapplication.mvp.ResultView;
 import com.example.ajax.myapplication.mvp.presenter.SearchPresenter;
@@ -27,8 +31,10 @@ public class SearchFragment extends BaseFragment implements ResultView<List<Book
     private SearchPresenter mPresenter;
     private boolean mNewRequest;
     private BookAdapter mAdapter;
-    private LinearLayoutManager mLayoutManager;
+    private GridLayoutManager mLayoutManager;
     private int mCurrentPage;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.OnScrollListener mBottomReachedListener;
 
     @Override
     public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
@@ -51,6 +57,9 @@ public class SearchFragment extends BaseFragment implements ResultView<List<Book
                 mPresenter.download(query);
                 mNewRequest = true;
                 showProgressDialog();
+                searchView.clearFocus();
+                mRecyclerView.addOnScrollListener(mBottomReachedListener);
+
                 return false;
             }
 
@@ -79,15 +88,22 @@ public class SearchFragment extends BaseFragment implements ResultView<List<Book
         setHasOptionsMenu(true);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
         final View view = LayoutInflater.from(container.getContext()).inflate(R.layout.fragment_search, container, false);
-        final RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list_books);
-        mLayoutManager = new LinearLayoutManager(container.getContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setAdapter(mAdapter);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.list_books);
+        final Resources resources = getResources();
+        final int add = resources.getInteger(R.integer.search_multiple);
+        mLayoutManager = new GridLayoutManager(container.getContext(), resources.getConfiguration().orientation + add);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+        mBottomReachedListener = new RecyclerView.OnScrollListener() {
 
             private final int visibleThreshold = 15; //TODO calculate depending on items on the screen
             boolean mIsScrolledByUser;
@@ -129,7 +145,7 @@ public class SearchFragment extends BaseFragment implements ResultView<List<Book
                 }
 
             }
-        });
+        };
 
         return view;
     }
@@ -139,6 +155,7 @@ public class SearchFragment extends BaseFragment implements ResultView<List<Book
         hideProgressDialog();
         if (mNewRequest) {
             mAdapter.setBooks(response);
+            hideSoftKeyboard(getActivity());
             mNewRequest = false;
         } else {
             mAdapter.addBooks(response);
@@ -147,8 +164,20 @@ public class SearchFragment extends BaseFragment implements ResultView<List<Book
 
     }
 
-    private BookAdapter.OnItemCLickListener createOnItemClickListener() {
-        return new BookAdapter.OnItemCLickListener() {
+    public void hideSoftKeyboard(final Activity activity) {
+        final InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        final View currentFocus = activity.getCurrentFocus();
+        if (currentFocus == null) {
+            return;
+        }
+        inputMethodManager.hideSoftInputFromWindow(
+                currentFocus.getWindowToken(), 0);
+    }
+
+    private OnItemClickListener createOnItemClickListener() {
+        return new OnItemClickListener() {
 
             @Override
             public void onClick(final BookModel pBook) {

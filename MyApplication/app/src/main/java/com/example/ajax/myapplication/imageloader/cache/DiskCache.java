@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 
 import com.example.ajax.myapplication.imageloader.BitmapProcessor;
-import com.example.ajax.myapplication.imageloader.HashHelper;
+import com.example.ajax.myapplication.utils.HashHelper;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -46,38 +46,6 @@ public class DiskCache {
         new DiskCacheTask(this).execute(DiskCacheTask.INIT);
     }
 
-    private void init() throws IOException {
-        synchronized (mDiskCacheLock) {
-            if (mDiskLruCache == null || mDiskLruCache.isClosed()) {
-                final File cacheDir = getDiskCacheDir(context, DISK_CACHE_SUBDIR);
-
-                if (!cacheDir.exists()) {
-                    cacheDir.mkdir();
-                }
-
-                if (cacheDir.getUsableSpace() > DISK_CACHE_SIZE) {
-                    mDiskLruCache = DiskLruCache.open(cacheDir, 1, 1, DISK_CACHE_SIZE);
-                } else {
-                    //TODO don't use disk cache
-                }
-            }
-
-            mDiskCacheStarting = false; // Finished initialization
-            mDiskCacheLock.notifyAll(); // Wake any waiting threads
-        }
-    }
-
-    private File getDiskCacheDir(final Context context, final String diskCacheSubdir) {
-
-        final String cachePath = Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ||
-                !Environment.isExternalStorageRemovable() ? context.getExternalCacheDir().getPath() : context
-                .getCacheDir().getPath();
-
-        return new File(cachePath + File.separator + diskCacheSubdir);
-
-    }
-
-
     public void addBitmapToDiskCache(final String key, final Bitmap value) {
         if (key == null || value == null) {
             return;
@@ -86,7 +54,6 @@ public class DiskCache {
         synchronized (mDiskCacheLock) {
             if (mDiskLruCache != null) {
                 OutputStream out = null;
-
 
                 try {
                     final DiskLruCache.Snapshot snapshot = mDiskLruCache.get(cacheKey);
@@ -171,35 +138,8 @@ public class DiskCache {
         new DiskCacheTask(this).execute(DiskCacheTask.FLUSH);
     }
 
-    private void flush() {
-        synchronized (mDiskCacheLock) {
-            if (mDiskLruCache != null) {
-                try {
-                    mDiskLruCache.flush();
-                } catch (final IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
     public void requestClose() {
         new DiskCacheTask(this).execute(DiskCacheTask.CLOSE);
-    }
-
-    private void close() {
-        synchronized (mDiskCacheLock) {
-            if (mDiskLruCache != null) {
-                if (!mDiskLruCache.isClosed()) {
-                    try {
-                        mDiskLruCache.close();
-                        mDiskLruCache = null;
-                    } catch (final IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
     }
 
     public void requestTearDown() {
@@ -223,7 +163,66 @@ public class DiskCache {
         }
     }
 
+    private void init() throws IOException {
+        synchronized (mDiskCacheLock) {
+            if (mDiskLruCache == null || mDiskLruCache.isClosed()) {
+                final File cacheDir = getDiskCacheDir(context, DISK_CACHE_SUBDIR);
+
+                if (!cacheDir.exists()) {
+                    cacheDir.mkdir();
+                }
+
+                if (cacheDir.getUsableSpace() > DISK_CACHE_SIZE) {
+                    mDiskLruCache = DiskLruCache.open(cacheDir, 1, 1, DISK_CACHE_SIZE);
+                } else {
+                    //TODO don't use disk cache
+                }
+            }
+
+            mDiskCacheStarting = false; // Finished initialization
+            mDiskCacheLock.notifyAll(); // Wake any waiting threads
+        }
+    }
+
+    private File getDiskCacheDir(final Context context, final String diskCacheSubdir) {
+
+        final String cachePath = (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ||
+                !Environment.isExternalStorageRemovable()) && context.getExternalCacheDir() != null ? context.getExternalCacheDir().getPath() : context
+                .getCacheDir().getPath();
+
+        return new File(cachePath + File.separator + diskCacheSubdir);
+
+    }
+
+    private void flush() {
+        synchronized (mDiskCacheLock) {
+            if (mDiskLruCache != null) {
+                try {
+                    mDiskLruCache.flush();
+                } catch (final IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void close() {
+        synchronized (mDiskCacheLock) {
+            if (mDiskLruCache != null) {
+                if (!mDiskLruCache.isClosed()) {
+                    try {
+                        mDiskLruCache.close();
+                        mDiskLruCache = null;
+                    } catch (final IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
     private class DiskCacheTask extends AsyncTask<Integer, Void, Void> {
+
         static final int INIT = 1;
         static final int FLUSH = 2;
         static final int CLOSE = 3;

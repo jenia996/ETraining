@@ -24,7 +24,6 @@ public class DBHelper extends SQLiteOpenHelper implements IDBOperation {
     private static final String SQL_TABLE_CREATE_TEMPLATE = "CREATE TABLE IF NOT EXISTS %s (%s);";
     private static final String SQL_TABLE_CREATE_FIELD_TEMPLATE = "%s %s";
 
-
     public DBHelper(final Context context, final SQLiteDatabase.CursorFactory factory, final int version) {
         super(context, Constants.DATABASE, factory, version);
 
@@ -43,8 +42,8 @@ public class DBHelper extends SQLiteOpenHelper implements IDBOperation {
 
     @Nullable
     private static String getTableCreateQuery(final Class<?> clazz) {
+        boolean delimAdded = false;
         final Table table = clazz.getAnnotation(Table.class);
-
         if (table != null) {
             try {
                 final String name = table.name();
@@ -70,16 +69,18 @@ public class DBHelper extends SQLiteOpenHelper implements IDBOperation {
                     }
 
                     if (type == null) {
-                        return null;
+                        continue;
+                    }
+
+                    if (delimAdded) {
+                        builder.append(",");
                     }
 
                     final String value = (String) field.get(null);
 
                     builder.append(String.format(Locale.US, SQL_TABLE_CREATE_FIELD_TEMPLATE, value, type));
+                    delimAdded = true;
 
-                    if (i < fields.length - 1) {
-                        builder.append(",");
-                    }
                 }
                 return String.format(Locale.US, SQL_TABLE_CREATE_TEMPLATE, name, builder);
             } catch (final Exception e) {
@@ -103,6 +104,11 @@ public class DBHelper extends SQLiteOpenHelper implements IDBOperation {
 
     @Override
     public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
+        for (final Class<?> clazz : Contract.MODELS) {
+            final String sql = "DROP TABLE " + getTableName(clazz) + " IF EXISTS";
+            db.execSQL(sql);
+        }
+        onCreate(db);
 
     }
 

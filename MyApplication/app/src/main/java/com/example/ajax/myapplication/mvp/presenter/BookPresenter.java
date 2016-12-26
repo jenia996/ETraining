@@ -2,63 +2,85 @@ package com.example.ajax.myapplication.mvp.presenter;
 
 import android.os.Handler;
 
-import com.example.ajax.myapplication.PageData;
-import com.example.ajax.myapplication.download.OnResultCallback;
-import com.example.ajax.myapplication.download.impl.LoadParseOperation;
 import com.example.ajax.myapplication.download.impl.Loader;
+import com.example.ajax.myapplication.download.impl.callback.NotifyResultCallback;
+import com.example.ajax.myapplication.download.impl.callback.OnNetworkResultCallBack;
+import com.example.ajax.myapplication.download.operations.LoadOperation;
+import com.example.ajax.myapplication.download.operations.ParseSimilarOperation;
 import com.example.ajax.myapplication.model.viewmodel.BookModel;
 import com.example.ajax.myapplication.mvp.BasePresenter;
 import com.example.ajax.myapplication.mvp.ResultView;
+import com.example.ajax.myapplication.settings.impl.Settings;
+import com.example.ajax.myapplication.utils.API;
+import com.example.ajax.myapplication.utils.Constants;
+import com.example.ajax.myapplication.utils.RequestCache;
 
 import java.util.List;
 
-/**
- * Created by Ajax on 18.11.2016.
- */
-
 public class BookPresenter implements BasePresenter {
 
-    private final LoadParseOperation mLoadParseOperation;
-    private final ResultView view;
-    private final Handler handler;
+    private static final String DELIM = "&";
+    private final LoadOperation mLoadOperation;
+    private final ParseSimilarOperation mParseSimilarOperation;
+    private final ResultView mView;
+    private final Handler mHandler;
     private final Loader mLoader;
+    private final RequestCache mRequestCache;
+    private final Settings mSettings;
 
     public BookPresenter(final ResultView pView) {
-        view = pView;
+        mView = pView;
         mLoader = new Loader();
-        handler = new Handler();
-        mLoadParseOperation = new LoadParseOperation();
+        mHandler = new Handler();
+        mLoadOperation = new LoadOperation();
+        mParseSimilarOperation = new ParseSimilarOperation();
+        mRequestCache = RequestCache.getInstance();
+        mSettings = new Settings();
     }
 
     @Override
     public void download(final String query) {
-        mLoader.execute(mLoadParseOperation, new PageData(query, 1), new OnResultCallback<List<BookModel>, Void>() {
+        final String cached = mRequestCache.get(query + Constants.BOOK_TAG);
+        if (cached != null) {
+            mLoader.execute(mParseSimilarOperation, cached, new NotifyResultCallback<List<BookModel>>() {
+
+                @Override
+                public void onSuccess(final List<BookModel> pBookModels) {
+                    notifyResponse(pBookModels);
+                }
+            });
+            return;
+        }
+        String request = API.getBookInfo(query);
+        if (mSettings.downloadLarge()) {
+            request += DELIM + Constants.DOWNLOAD_LARGE + "=true";
+        }
+        mLoader.execute(mLoadOperation, request, new OnNetworkResultCallBack() {
 
             @Override
-            public void onSuccess(final List<BookModel> books) {
-                notifyResponse(books);
-                ;
-            }
+            public void onSuccess(final String result) {
+                mRequestCache.put(query + Constants.BOOK_TAG, result);
+                mLoader.execute(mParseSimilarOperation, result, new NotifyResultCallback<List<BookModel>>() {
 
-            @Override
-            public void onError(final Exception e) {
+                    @Override
+                    public void onSuccess(final List<BookModel> pBookModels) {
+                        notifyResponse(pBookModels);
+                    }
 
-            }
-
-            @Override
-            public void onProgressChange(final Void aVoid) {
+                });
 
             }
+
         });
     }
 
     private void notifyResponse(final List<BookModel> response) {
-        handler.post(new Runnable() {
+        mHandler.post(new Runnable() {
 
             @Override
             public void run() {
-                view.hideProgressDialog();
-                view.showResponse(response);
+                mView.hideProgressDialog();
+                mView.showResponse(response);
             }
         });
 

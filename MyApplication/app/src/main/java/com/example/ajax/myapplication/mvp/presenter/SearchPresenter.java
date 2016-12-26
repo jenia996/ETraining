@@ -3,97 +3,84 @@ package com.example.ajax.myapplication.mvp.presenter;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.example.ajax.myapplication.PageData;
-import com.example.ajax.myapplication.download.OnResultCallback;
-import com.example.ajax.myapplication.download.impl.LoadParseOperation;
+import com.example.ajax.myapplication.download.operations.LoadOperation;
 import com.example.ajax.myapplication.download.impl.Loader;
+import com.example.ajax.myapplication.download.operations.ParseSearchOperation;
+import com.example.ajax.myapplication.download.impl.callback.NotifyResultCallback;
+import com.example.ajax.myapplication.download.impl.callback.OnNetworkResultCallBack;
 import com.example.ajax.myapplication.model.viewmodel.BookModel;
 import com.example.ajax.myapplication.mvp.ResultView;
 import com.example.ajax.myapplication.mvp.SearchBookPresenter;
+import com.example.ajax.myapplication.utils.API;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 
 public class SearchPresenter implements SearchBookPresenter {
 
-    private final LoadParseOperation mLoadParseOperation;
-    private final ResultView view;
-    private final Handler handler;
+    private final LoadOperation mLoadOperation;
+    private final ParseSearchOperation mParseSearchOperation;
+    private final ResultView mView;
+    private final Handler mHandler;
     private final Loader mLoader;
-    private String lastRequest;
+    private String mLastRequest;
 
     public SearchPresenter(final ResultView view) {
-        this.view = view;
-        handler = new Handler(Looper.getMainLooper());
+        this.mView = view;
+        mHandler = new Handler(Looper.getMainLooper());
         mLoader = new Loader();
-        mLoadParseOperation = new LoadParseOperation();
+        mLoadOperation = new LoadOperation();
+
+        mParseSearchOperation = new ParseSearchOperation();
     }
 
     @Override
     public void update(final int page) {
-        loadData(lastRequest, page);
+        loadData(mLastRequest, page);
     }
 
     @Override
     public void download(final String query) {
-        lastRequest = encode(query);
-        loadData(lastRequest, 1);
+        mLastRequest = encode(query);
+        loadData(mLastRequest, 1);
     }
 
     private void loadData(final String query, final int page) {
 
-        mLoader.execute(mLoadParseOperation, new PageData(query, page), new OnResultCallback<List<BookModel>, Void>() {
-
-            @Override
-            public void onSuccess(final List<BookModel> books) {
-                notifyResponse(books);
-            }
+        mLoader.execute(mLoadOperation, API.getSearchUrl(query, page), new OnNetworkResultCallBack() {
 
             @Override
             public void onError(final Exception e) {
-
+                super.onError(e);
+                mView.hideProgressDialog();
             }
 
             @Override
-            public void onProgressChange(final Void aVoid) {
+            public void onSuccess(final String pS) {
+                mLoader.execute(mParseSearchOperation, pS, new NotifyResultCallback<List<BookModel>>() {
+
+                    @Override
+                    public void onSuccess(final List<BookModel> pBookModels) {
+                        notifyResponse(pBookModels);
+                    }
+                });
 
             }
         });
 
-    }
-
-    private void notifyError(final IOException e) {
-        handler.post(new Runnable() {
-
-            @Override
-            public void run() {
-                view.hideProgressDialog();
-            }
-        });
     }
 
     private void notifyResponse(final List<BookModel> response) {
-        handler.post(new Runnable() {
+        mHandler.post(new Runnable() {
 
             @Override
             public void run() {
-                view.hideProgressDialog();
-                view.showResponse(response);
+                mView.hideProgressDialog();
+                mView.showResponse(response);
             }
         });
 
-    }
-
-    private void notifyResponce(final String response) {
-        handler.post(new Runnable() {
-
-            @Override
-            public void run() {
-                view.hideProgressDialog();
-            }
-        });
     }
 
     private String encode(final String param) {
@@ -101,7 +88,7 @@ public class SearchPresenter implements SearchBookPresenter {
         try {
             encoded = URLEncoder.encode(param, "UTF-8");
         } catch (final UnsupportedEncodingException e) {
-            e.printStackTrace();
+            throw new IllegalStateException("");
         }
         return encoded;
     }

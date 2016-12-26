@@ -1,8 +1,9 @@
-package com.example.ajax.myapplication.imageloader;
+package com.example.ajax.myapplication.imageloader.impl;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.HttpClient;
@@ -10,25 +11,31 @@ import com.example.ajax.myapplication.download.OnResultCallback;
 import com.example.ajax.myapplication.download.OwnAsyncTask;
 import com.example.ajax.myapplication.download.ProgressCallback;
 import com.example.ajax.myapplication.download.impl.Loader;
+import com.example.ajax.myapplication.imageloader.KnightOfTheBrush;
 import com.example.ajax.myapplication.imageloader.cache.DiskCache;
 import com.example.ajax.myapplication.imageloader.cache.MemCache;
 import com.example.ajax.myapplication.utils.ContextHolder;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-class KnightOfTheBrushImpl implements KnightOfTheBrush {
+public class KnightOfTheBrushImpl implements KnightOfTheBrush {
 
     private final MemCache memCache;
     private final DiskCache mDiskCache;
-    private final Loader loader = new Loader();
+    private final Loader loader;
     private final BitmapOperation bitmapOperation;
+    private final Map<String, Boolean> mLoading;
 
-    KnightOfTheBrushImpl() {
+    public KnightOfTheBrushImpl() {
         memCache = new MemCache();
+        loader = new Loader(2);
         mDiskCache = DiskCache.getInstance();
         mDiskCache.requestInit(ContextHolder.get());
         bitmapOperation = new BitmapOperation();
+        mLoading = new ConcurrentHashMap<>();
     }
 
     public void clearCache() {
@@ -37,6 +44,17 @@ class KnightOfTheBrushImpl implements KnightOfTheBrush {
 
     @Override
     public void drawBitmap(final ImageView imageView, final String imageUrl) {
+        final Object tag = imageView.getTag();
+
+        if (tag != null && tag.equals(imageUrl)) {
+            return;
+        }
+
+        if (mLoading.get(imageUrl) != null && mLoading.get(imageUrl)) {
+            return;
+        }
+
+        imageView.setImageBitmap(null);
         synchronized (memCache) {
             final Bitmap bitmap = memCache.get(imageUrl);
 
@@ -46,13 +64,20 @@ class KnightOfTheBrushImpl implements KnightOfTheBrush {
             }
         }
         final Bitmap bitmap = mDiskCache.getBitmapFromDiskCache(imageUrl);
+
         if (bitmap != null) {
             imageView.setImageBitmap(bitmap);
             return;
         }
 
-        loader.execute(bitmapOperation, new ImageData(imageUrl, imageView.getLayoutParams().width, imageView
-                .getLayoutParams().height), new BitmapResultCallback(imageView, imageUrl) {
+        imageView.setImageBitmap(null);
+        final ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
+
+        final int width = layoutParams.width;
+        final int height = layoutParams.height;
+
+        mLoading.put(imageUrl, true);
+        loader.execute(bitmapOperation, new ImageData(imageUrl, width, height), new BitmapResultCallback(imageView, imageUrl) {
 
             @Override
             public void onError(final Exception e) {
@@ -61,16 +86,17 @@ class KnightOfTheBrushImpl implements KnightOfTheBrush {
 
             @Override
             public void onSuccess(final Bitmap bitmap) {
-                if (bitmap != null) {
-                    mDiskCache.addBitmapToDiskCache(imageUrl, bitmap);
+                if (bitmap == null) {
+                    return;
                 }
+
+                mDiskCache.addBitmapToDiskCache(imageUrl, bitmap);
                 synchronized (memCache) {
-                    if (bitmap != null) {
-                        memCache.put(imageUrl, bitmap);
-                    }
+                    memCache.put(imageUrl, bitmap);
                 }
 
                 super.onSuccess(bitmap);
+                mLoading.remove(imageUrl);
             }
         });
 
@@ -93,12 +119,11 @@ class KnightOfTheBrushImpl implements KnightOfTheBrush {
 
         private static final String TAG = BitmapResultCallback.class.getSimpleName();
         private final WeakReference<ImageView> imageView;
-        private final String value;
+        private final String imageUrl;
 
-        BitmapResultCallback(final ImageView imageView, final String value) {
+        BitmapResultCallback(final ImageView imageView, final String imageUrl) {
             this.imageView = new WeakReference<>(imageView);
-            imageView.setTag(value);
-            this.value = value;
+            this.imageUrl = imageUrl;
         }
 
         @Override
@@ -106,9 +131,11 @@ class KnightOfTheBrushImpl implements KnightOfTheBrush {
             final ImageView imageView = this.imageView.get();
             if (imageView != null) {
                 final Object tag = imageView.getTag();
-                if (tag != null && tag.equals(value)) {
-                    imageView.setImageBitmap(bitmap);
+                if (tag != null && tag.equals(imageUrl)) {
+                    return;
                 }
+                imageView.setImageBitmap(bitmap);
+                imageView.setTag(imageUrl);
             }
         }
 

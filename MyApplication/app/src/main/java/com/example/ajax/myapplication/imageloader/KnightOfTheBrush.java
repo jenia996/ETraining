@@ -2,9 +2,7 @@ package com.example.ajax.myapplication.imageloader;
 
 import android.widget.ImageView;
 
-/**
- * Created by Ajax on 26.10.2016.
- */
+import com.example.ajax.myapplication.imageloader.impl.KnightOfTheBrushImpl;
 
 public interface KnightOfTheBrush {
 
@@ -19,7 +17,6 @@ public interface KnightOfTheBrush {
         private static KnightOfTheBrush newInstance() {
             return new KnightOfTheBrushImpl();
         }
-
 
         public static KnightOfTheBrush getInstance() {
             if (knightOfTheBrush == null) {

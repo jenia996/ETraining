@@ -6,9 +6,36 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="checkboxStyle">@style/SingleLineCheckBox</item>
+    </style>
+
+    <style name="SingleLineCheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="EditDialog" parent="android:Theme.Panel">
+        <item name="android:windowMinWidthMajor">60%</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowBackground">@color/blue_transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowMinWidthMinor">200dp</item>
+    </style>
+
+    <style name="BigImageDialogStyle" parent="android:Theme.Panel">
+        <item name="android:windowAnimationStyle">@style/BigImageDialogAnimationStyle</item>
+    </style>
+
+    <style name="BigImageDialogAnimationStyle">
+        <item name="android:windowEnterAnimation">@anim/anim_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_out</item>
     </style>
 
 
+    <style name="SmallButton" parent="Base.Widget.AppCompat.Button.Small">
+        <item name="android:minHeight">36dip</item>
+        <item name="android:minWidth">36dip</item>
+
+    </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>

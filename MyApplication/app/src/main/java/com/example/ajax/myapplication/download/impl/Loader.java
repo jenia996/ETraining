@@ -10,21 +10,23 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Created by Ajax on 19.10.2016.
- */
-
 public class Loader {
+
     private final ExecutorService executorService;
 
     public Loader() {
-        executorService = Executors.newCachedThreadPool();
+        executorService = Executors.newFixedThreadPool(1);
+    }
+
+    public Loader(int pNumber) {
+        executorService = Executors.newFixedThreadPool(pNumber);
     }
 
     public <Param, Progress, Result> void execute(final OwnAsyncTask<Param, Progress, Result> ownAsyncTask, final
     Param param, final OnResultCallback<Result, Progress> onResultCallback) {
         final Handler handler = new Handler();
         executorService.execute(new Runnable() {
+
             @Override
             public void run() {
                 final Result result;
@@ -34,6 +36,7 @@ public class Loader {
                         @Override
                         public void onProgressChange(final Progress progress) {
                             handler.post(new Runnable() {
+
                                 @Override
                                 public void run() {
                                     onResultCallback.onProgressChange(progress);
@@ -44,13 +47,20 @@ public class Loader {
                     });
 
                     handler.post(new Runnable() {
+
                         @Override
                         public void run() {
                             onResultCallback.onSuccess(result);
                         }
                     });
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (final IOException e) {
+                    handler.post(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            onResultCallback.onError(e);
+                        }
+                    });
                 }
 
             }

@@ -150,7 +150,7 @@ final class DiskLruCache implements Closeable {
         @Override public Void call() throws Exception {
             synchronized (DiskLruCache.this) {
                 if (journalWriter == null) {
-                    return null; // closed
+                    return null;
                 }
                 trimToSize();
                 if (journalRebuildRequired()) {

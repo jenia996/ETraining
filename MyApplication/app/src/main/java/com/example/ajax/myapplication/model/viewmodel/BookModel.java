@@ -18,7 +18,6 @@ public class BookModel implements Parcelable {
         }
     };
     private Long id;
-    private String isbn;
     private String description;
     private String title;
     private String image;
@@ -31,7 +30,6 @@ public class BookModel implements Parcelable {
 
     protected BookModel(final Parcel in) {
         this.id = (Long) in.readValue(Long.class.getClassLoader());
-        this.isbn = in.readString();
         this.description = in.readString();
         this.title = in.readString();
         this.image = in.readString();
@@ -70,14 +68,6 @@ public class BookModel implements Parcelable {
 
     public void setAuthorId(final long pAuthorId) {
         authorId = pAuthorId;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(final String pIsbn) {
-        isbn = pIsbn;
     }
 
     public String getDescription() {
@@ -124,7 +114,6 @@ public class BookModel implements Parcelable {
     @Override
     public void writeToParcel(final Parcel dest, final int flags) {
         dest.writeValue(this.id);
-        dest.writeString(this.isbn);
         dest.writeString(this.description);
         dest.writeString(this.title);
         dest.writeString(this.image);

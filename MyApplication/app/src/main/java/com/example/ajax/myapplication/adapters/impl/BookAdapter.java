@@ -1,4 +1,4 @@
-package com.example.ajax.myapplication.adapters;
+package com.example.ajax.myapplication.adapters.impl;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ajax.myapplication.R;
-import com.example.ajax.myapplication.imageloader.KnightOfTheBrush;
+import com.example.ajax.myapplication.adapters.OnItemClickListener;
+import com.example.ajax.myapplication.imageloader.impl.ImageLoader;
 import com.example.ajax.myapplication.model.viewmodel.BookModel;
 
 import java.util.ArrayList;
@@ -17,12 +18,20 @@ import java.util.List;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
-    private OnItemCLickListener mItemCLickListener;
+    private ImageLoader mImageLoader;
     private List<BookModel> books;
+    private View.OnClickListener mListener;
 
-    public BookAdapter(final OnItemCLickListener pItemCLickListener) {
+    public BookAdapter(final OnItemClickListener pItemCLickListener) {
         this();
-        mItemCLickListener = pItemCLickListener;
+        mListener = new View.OnClickListener() {
+
+            @Override
+            public void onClick(final View v) {
+                pItemCLickListener.onClick(books.get((Integer) v.getTag()));
+            }
+        };
+        mImageLoader = new ImageLoader();
     }
 
     private BookAdapter() {
@@ -42,15 +51,8 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
         holder.title.setText(book.getTitle());
         holder.author.setText(book.getAuthorName());
         holder.rating.setText(String.valueOf(book.getRating()));
-        KnightOfTheBrush.Impl.getInstance().drawBitmap(holder.cover, book.getImageUrl());
-        holder.container.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(final View v) {
-
-                mItemCLickListener.onClick(books.get((Integer) v.getTag()));
-            }
-        });
+        mImageLoader.drawBitmap(holder.cover, book.getImageUrl());
+        holder.container.setOnClickListener(mListener);
         holder.container.setTag(position);
     }
 
@@ -65,11 +67,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     public void addBooks(final Collection<BookModel> response) {
         books.addAll(response);
-    }
-
-    public interface OnItemCLickListener {
-
-        void onClick(BookModel pBook);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

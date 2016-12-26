@@ -5,12 +5,7 @@ import android.support.v4.app.Fragment;
 
 import com.example.ajax.myapplication.mvp.BaseView;
 
-/**
- * Created by Ajax on 18.11.2016.
- */
-
 public abstract class BaseFragment extends Fragment implements BaseView {
-
 
     public ProgressDialog mProgressDialog;
 

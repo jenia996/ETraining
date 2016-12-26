@@ -44,7 +44,7 @@
     <div class="alert alert-success" style="visibility: collapse;" id="outputAlert"></div>
 
     <!--
-      A form that takes a text value and submits it to the Endpoint,
+      A form that takes a text imageUrl and submits it to the Endpoint,
       access to the Endpoint is enabled once the client is loaded below.
     -->
     <div class="jumbotron">
@@ -89,7 +89,7 @@
     // A function that attaches a "Say Hello" button click handler
     function enableClick() {
       document.getElementById('helloButton').onclick = function() {
-        var name = document.getElementById('nameInput').value;
+        var name = document.getElementById('nameInput').imageUrl;
         gapi.client.myApi.sayHi({'name': name}).execute(
           function(response) {
             var outputAlertDiv = document.getElementById('outputAlert');
