@@ -58,9 +58,17 @@ public class BookTitleCardActivity extends BaseTitleCard implements ResultView<L
         final BookModel bookToSkip = response.get(0);
         mBook.setDescription(bookToSkip.getDescription());
         mCover.setTag(bookToSkip.getImageUrl());
-        mDescription.setText(Html.fromHtml(bookToSkip.getDescription()));
+
+        if (bookToSkip.getDescription() != null) {
+            mDescription.setText(Html.fromHtml(bookToSkip.getDescription()));
+        }
+
         mCover.setOnClickListener(this);
         response.remove(0);
+
+        if (response.isEmpty()) {
+            return;
+        }
         final SimilarBookAdapter adapter = new SimilarBookAdapter(this, response, mOnItemClickListener);
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.getAdapter().notifyDataSetChanged();
@@ -75,7 +83,7 @@ public class BookTitleCardActivity extends BaseTitleCard implements ResultView<L
             final BigImageDialog dialog = new BigImageDialog(this);
             dialog.show((String) v.getTag(), R.style.BigImageDialogStyle);
         } else if (id == R.id.author_name) {
-            final Intent intent = new Intent(this, AuthorTitleCard.class);
+            final Intent intent = new Intent(this, AuthorTitleCardActivity.class);
             final Parcelable model = new AuthorModel(mBook.getAuthorId(), mBook.getAuthorName());
             intent.putExtra(Constants.AUTHOR_EXTRA, model);
             startActivity(intent);

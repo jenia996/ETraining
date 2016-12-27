@@ -9,6 +9,7 @@ import com.example.ajax.myapplication.settings.impl.Settings;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -45,7 +46,12 @@ public final class XMLParser {
         doc = documentBuilder.parse(inputSource);
         doc.getDocumentElement().normalize();
         final NodeList books = doc.getElementsByTagName(Constants.BOOKS_TAG).item(0).getChildNodes();
-        authorModel.setAbout(doc.getElementsByTagName(Author.ABOUT).item(0).getFirstChild().getNodeValue());
+        final Node about = doc.getElementsByTagName(Author.ABOUT).item(0).getFirstChild();
+
+        if (about != null) {
+            authorModel.setAbout(about.getNodeValue());
+        }
+
         authorModel.setImage(doc.getElementsByTagName(Book.IMAGE_URL).item(0).getFirstChild().getNodeValue());
 
         for (int i = 0; i < books.getLength(); i++) {
@@ -97,11 +103,13 @@ public final class XMLParser {
                 bookModel.setRating(Float.parseFloat(work.getElementsByTagName(Book.RATING).item(0).getFirstChild()
                         .getNodeValue()));
                 bookModel.setTitle(bookElement.getElementsByTagName(Book.TITLE).item(0).getFirstChild().getNodeValue());
-                bookModel.setId(Long.parseLong(bookElement.getElementsByTagName(Constants.AUTHOR_ID_TAG).item(0).getFirstChild()
+                bookModel.setId(Long.parseLong(bookElement.getElementsByTagName(Constants.AUTHOR_ID_TAG).item(0)
+                        .getFirstChild()
                         .getNodeValue()));
                 final Element authorNode = (Element) bookElement.getElementsByTagName(Constants.AUTHOR_TAG).item(0);
                 author.setName(authorNode.getElementsByTagName(Author.NAME).item(0).getFirstChild().getNodeValue());
-                author.setId(Long.parseLong(authorNode.getElementsByTagName(Constants.AUTHOR_ID_TAG).item(0).getFirstChild()
+                author.setId(Long.parseLong(authorNode.getElementsByTagName(Constants.AUTHOR_ID_TAG).item(0)
+                        .getFirstChild()
                         .getNodeValue()));
                 bookModel.setImageUrl(bookElement.getElementsByTagName(Book.IMAGE_URL).item(0).getChildNodes().item(0)
                         .getNodeValue());
@@ -135,8 +143,11 @@ public final class XMLParser {
         final NodeList similarBooksTag = doc.getElementsByTagName(Constants.SIMILAR_BOOK_TAG);
 
         final BookModel bookToSkip = new BookModel();
-        bookToSkip.setDescription(doc.getElementsByTagName(Book.DESCRIPTION).item(0)
-                .getChildNodes().item(0).getNodeValue());
+        final Node description = doc.getElementsByTagName(Book.DESCRIPTION).item(0).
+                getFirstChild();
+        if (description != null) {
+            bookToSkip.setDescription(description.getNodeValue());
+        }
         if (mSettings.downloadLarge()) {
             bookToSkip.setImageUrl(doc.getElementsByTagName(Constants.LARGE_IMAGE_URL).item(0)
                     .getChildNodes().item(0)

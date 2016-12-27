@@ -2,7 +2,6 @@ package com.example.ajax.myapplication.mvp.presenter;
 
 import android.os.Handler;
 
-import com.example.ajax.myapplication.download.OnResultCallback;
 import com.example.ajax.myapplication.download.impl.Loader;
 import com.example.ajax.myapplication.download.impl.callback.NotifyResultCallback;
 import com.example.ajax.myapplication.download.impl.callback.OnNetworkResultCallBack;

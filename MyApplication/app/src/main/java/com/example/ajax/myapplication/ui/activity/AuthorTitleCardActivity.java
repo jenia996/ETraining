@@ -21,7 +21,7 @@ import com.example.ajax.myapplication.mvp.ResultView;
 import com.example.ajax.myapplication.mvp.presenter.AuthorPresenter;
 import com.example.ajax.myapplication.utils.Constants;
 
-public class AuthorTitleCard extends BaseTitleCard implements ResultView<AuthorModel> {
+public class AuthorTitleCardActivity extends BaseTitleCard implements ResultView<AuthorModel> {
 
     private RecyclerView mRecyclerView;
     private OnItemClickListener mOnRelatedItemClickListener;
@@ -45,15 +45,17 @@ public class AuthorTitleCard extends BaseTitleCard implements ResultView<AuthorM
         }
 
         final KnightOfTheBrush imageLoader = new ImageLoader();
-        mAuthorName.setText(response.getName());
-        mAbout.setText(Html.fromHtml(response.getAbout()));
+        if (response.getAbout() != null) {
+            mAbout.setText(Html.fromHtml(response.getAbout()));
+        }
         imageLoader.drawBitmap(mAuthorImage, response.getImage());
 
         if (response.getBooks() == null || response.getBooks().isEmpty()) {
             return;
         }
 
-        final SimilarBookAdapter adapter = new SimilarBookAdapter(this, response.getBooks(), mOnRelatedItemClickListener);
+        final SimilarBookAdapter adapter = new SimilarBookAdapter(this, response.getBooks(),
+                mOnRelatedItemClickListener);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         mRecyclerView.setAdapter(adapter);
         mRecyclerView.getAdapter().notifyDataSetChanged();
@@ -68,12 +70,15 @@ public class AuthorTitleCard extends BaseTitleCard implements ResultView<AuthorM
         final ActionBar supportActionBar = getSupportActionBar();
 
         if (supportActionBar != null) {
+            supportActionBar.setDisplayHomeAsUpEnabled(true);
+            supportActionBar.setDisplayShowHomeEnabled(true);
             supportActionBar.setTitle(authorModel.getName());
         }
         final BasePresenter presenter = new AuthorPresenter(this);
         mAuthorImage = (ImageView) findViewById(R.id.image);
         mAbout = (TextView) findViewById(R.id.about);
         mAuthorName = (TextView) findViewById(R.id.author_name);
+        mAuthorName.setText(authorModel.getName());
         mOnRelatedItemClickListener = createOnRelatedItemClickListener();
         mRecyclerView = (RecyclerView) findViewById(R.id.books);
         presenter.download(String.valueOf(authorModel.getId()));

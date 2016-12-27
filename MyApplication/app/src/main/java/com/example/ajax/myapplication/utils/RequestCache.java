@@ -2,8 +2,7 @@ package com.example.ajax.myapplication.utils;
 
 import android.util.LruCache;
 
-
-public class RequestCache {
+public final class RequestCache {
 
     private static RequestCache mInstance;
     private final LruCache<String, String> memCache;

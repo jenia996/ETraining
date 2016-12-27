@@ -14,11 +14,11 @@
     </style>
 
     <style name="EditDialog" parent="android:Theme.Panel">
-        <item name="android:windowMinWidthMajor">60%</item>
+        <item name="android:windowMinWidthMajor">85%</item>
         <item name="android:windowFrame">@null</item>
         <item name="android:windowBackground">@color/blue_transparent</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowMinWidthMinor">200dp</item>
+        <item name="android:windowMinWidthMinor">85%</item>
     </style>
 
     <style name="BigImageDialogStyle" parent="android:Theme.Panel">

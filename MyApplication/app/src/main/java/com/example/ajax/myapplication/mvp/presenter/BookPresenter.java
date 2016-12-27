@@ -20,8 +20,7 @@ import com.example.ajax.myapplication.utils.API;
 import com.example.ajax.myapplication.utils.Constants;
 import com.example.ajax.myapplication.utils.ContextHolder;
 import com.example.ajax.myapplication.utils.FileHelper;
-import com.example.ajax.myapplication.utils.HashHelper;
-import com.example.ajax.myapplication.utils.RequestCache;
+    import com.example.ajax.myapplication.utils.HashHelper;
 
 import java.util.List;
 
@@ -33,7 +32,6 @@ public class BookPresenter implements BasePresenter {
     private final ResultView mView;
     private final Handler mHandler;
     private final Loader mLoader;
-    private final RequestCache mRequestCache;
     private final Settings mSettings;
     private final DBHelper mDBHelper;
 
@@ -43,7 +41,6 @@ public class BookPresenter implements BasePresenter {
         mHandler = new Handler();
         mLoadOperation = new LoadOperation();
         mParseSimilarOperation = new ParseSimilarOperation();
-        mRequestCache = RequestCache.getInstance();
         mSettings = new Settings();
         mDBHelper = new DBHelper(ContextHolder.get(), null, Constants.DATABASE_VERSION);
     }
@@ -73,17 +70,6 @@ public class BookPresenter implements BasePresenter {
 
     @Override
     public void download(final String query) {
-        final String cached = mRequestCache.get(query + Constants.BOOK_TAG);
-        if (cached != null) {
-            mLoader.execute(mParseSimilarOperation, cached, new NotifyResultCallback<List<BookModel>>() {
-
-                @Override
-                public void onSuccess(final List<BookModel> pBookModels) {
-                    notifyResponse(pBookModels);
-                }
-            });
-            return;
-        }
         String request = API.getBookInfo(query);
         if (mSettings.downloadLarge()) {
             request += DELIM + Constants.DOWNLOAD_LARGE + "=true";
@@ -92,7 +78,6 @@ public class BookPresenter implements BasePresenter {
 
             @Override
             public void onSuccess(final String result) {
-                mRequestCache.put(query + Constants.BOOK_TAG, result);
                 mLoader.execute(mParseSimilarOperation, result, new NotifyResultCallback<List<BookModel>>() {
 
                     @Override
