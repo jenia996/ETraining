@@ -3,13 +3,15 @@ package com.example.ajax.myapplication.mvp.presenter;
 import android.os.Handler;
 
 import com.example.ajax.myapplication.download.OnResultCallback;
-import com.example.ajax.myapplication.download.operations.LoadOperation;
 import com.example.ajax.myapplication.download.impl.Loader;
+import com.example.ajax.myapplication.download.impl.callback.NotifyResultCallback;
 import com.example.ajax.myapplication.download.impl.callback.OnNetworkResultCallBack;
+import com.example.ajax.myapplication.download.operations.LoadOperation;
 import com.example.ajax.myapplication.download.operations.ParseAuthorOperation;
 import com.example.ajax.myapplication.model.viewmodel.AuthorModel;
 import com.example.ajax.myapplication.mvp.BasePresenter;
 import com.example.ajax.myapplication.mvp.ResultView;
+import com.example.ajax.myapplication.utils.API;
 
 public class AuthorPresenter implements BasePresenter {
 
@@ -29,22 +31,18 @@ public class AuthorPresenter implements BasePresenter {
         mOnResultCallback = new OnNetworkResultCallBack() {
 
             @Override
+            public void onError(final Exception e) {
+                super.onError(e);
+                mView.hideProgressDialog();
+            }
+
+            @Override
             public void onSuccess(final String pS) {
-                mLoader.execute(mParseAuthorOperation, pS, new OnResultCallback<AuthorModel, Void>() {
+                mLoader.execute(mParseAuthorOperation, pS, new NotifyResultCallback<AuthorModel>() {
 
                     @Override
                     public void onSuccess(final AuthorModel pAuthorModel) {
                         notifyResponce(pAuthorModel);
-                    }
-
-                    @Override
-                    public void onError(final Exception e) {
-
-                    }
-
-                    @Override
-                    public void onProgressChange(final Void pVoid) {
-
                     }
                 });
             }
@@ -53,7 +51,7 @@ public class AuthorPresenter implements BasePresenter {
 
     @Override
     public void download(final String query) {
-        mLoader.execute(mLoadOperation, query, mOnResultCallback);
+        mLoader.execute(mLoadOperation, API.getAuthorBooks(query), mOnResultCallback);
 
     }
 

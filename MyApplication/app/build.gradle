@@ -1,8 +1,7 @@
 apply plugin: 'com.android.application'
 
-//TODO remove all yellow
 android {
-    compileSdkVersion 24
+    compileSdkVersion 25
     buildToolsVersion "24.0.2"
 
     def API_URL = '"https://www.goodreads.com/"'
@@ -10,22 +9,14 @@ android {
     defaultConfig {
         applicationId "com.example.ajax.myapplication"
         minSdkVersion 17
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    flavorDimensions "paid", "locale"
+    flavorDimensions "locale"
     productFlavors {
-        preprod {
-            dimension "paid"
-            buildConfigField "Boolean", "Pay", "false"
-        }
-        prod {
-            dimension "paid"
-            buildConfigField "Boolean", "Pay", "true"
-        }
         us {
             dimension "locale"
             applicationId "com.example.ajax.myapplication.usa"
@@ -53,7 +44,6 @@ android {
         }
 
         release {
-            buildConfigField "String", "API_URL", "AnotherURL"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             applicationVariants.all { variant ->
@@ -68,6 +58,7 @@ android {
             }
         }
     }
+    return void
 }
 
 dependencies {
@@ -75,9 +66,8 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    //TODO update version
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.android.support:design:25.0.1'
     compile 'com.google.code.findbugs:jsr305:2.0.1'
     compile 'com.google.code.gson:gson:2.7'
     testCompile 'junit:junit:4.12'

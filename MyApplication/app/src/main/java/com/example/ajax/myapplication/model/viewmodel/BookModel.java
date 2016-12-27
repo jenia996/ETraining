@@ -20,7 +20,7 @@ public class BookModel implements Parcelable {
     private Long id;
     private String description;
     private String title;
-    private String image;
+    private String imageUrl;
     private Float rating;
     private Long authorId;
     private String authorName;
@@ -32,18 +32,10 @@ public class BookModel implements Parcelable {
         this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.description = in.readString();
         this.title = in.readString();
-        this.image = in.readString();
+        this.imageUrl = in.readString();
         this.rating = (Float) in.readValue(Float.class.getClassLoader());
         this.authorId = (Long) in.readValue(Long.class.getClassLoader());
         this.authorName = in.readString();
-    }
-
-    public void setRating(final Float pRating) {
-        rating = pRating;
-    }
-
-    public void setAuthorId(final Long pAuthorId) {
-        authorId = pAuthorId;
     }
 
     public String getAuthorName() {
@@ -54,19 +46,15 @@ public class BookModel implements Parcelable {
         authorName = pAuthorName;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(final String image) {
-        this.image = image;
+    public void setImageUrl(final String image) {
+        this.imageUrl = image;
     }
 
     public long getAuthorId() {
         return authorId;
     }
 
-    public void setAuthorId(final long pAuthorId) {
+    public void setAuthorId(final Long pAuthorId) {
         authorId = pAuthorId;
     }
 
@@ -103,7 +91,7 @@ public class BookModel implements Parcelable {
     }
 
     public String getImageUrl() {
-        return image;
+        return imageUrl;
     }
 
     @Override
@@ -116,7 +104,7 @@ public class BookModel implements Parcelable {
         dest.writeValue(this.id);
         dest.writeString(this.description);
         dest.writeString(this.title);
-        dest.writeString(this.image);
+        dest.writeString(this.imageUrl);
         dest.writeValue(this.rating);
         dest.writeValue(this.authorId);
         dest.writeString(this.authorName);

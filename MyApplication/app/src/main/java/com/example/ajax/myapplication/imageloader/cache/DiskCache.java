@@ -6,7 +6,9 @@ import android.os.AsyncTask;
 import android.os.Environment;
 
 import com.example.ajax.myapplication.imageloader.BitmapProcessor;
+import com.example.ajax.myapplication.utils.ContextHolder;
 import com.example.ajax.myapplication.utils.HashHelper;
+import com.example.ajax.myapplication.utils.IOUtils;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -15,7 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class DiskCache {
+public final class DiskCache {
 
     private static final int DISK_CACHE_INDEX = 0;
     private static final String DISK_CACHE_SUBDIR = "covers";
@@ -24,7 +26,6 @@ public class DiskCache {
     private static DiskCache diskCache;
     private final Object mDiskCacheLock = new Object();
     private DiskLruCache mDiskLruCache;
-    private Context context;
     private BitmapProcessor bitmapProcessor;
 
     private DiskCache() {
@@ -38,9 +39,7 @@ public class DiskCache {
         return diskCache;
     }
 
-    public void requestInit(final Context context) {
-        this.context = context;
-
+    public void requestInit() {
         bitmapProcessor = new BitmapProcessor();
 
         new DiskCacheTask(this).execute(DiskCacheTask.INIT);
@@ -50,6 +49,7 @@ public class DiskCache {
         if (key == null || value == null) {
             return;
         }
+
         final String cacheKey = HashHelper.sha256(key);
         synchronized (mDiskCacheLock) {
             if (mDiskLruCache != null) {
@@ -75,13 +75,7 @@ public class DiskCache {
                 } catch (final IOException e) {
                     e.printStackTrace();
                 } finally {
-                    if (out != null) {
-                        try {
-                            out.close();
-                        } catch (final IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    IOUtils.close(out);
                 }
             }
         }
@@ -97,7 +91,7 @@ public class DiskCache {
                 try {
                     mDiskCacheLock.wait();
                 } catch (final InterruptedException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
             }
 
@@ -120,13 +114,7 @@ public class DiskCache {
                 } catch (final IOException e) {
                     e.printStackTrace();
                 } finally {
-                    if (inputStream != null) {
-                        try {
-                            inputStream.close();
-                        } catch (final IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    IOUtils.close(inputStream);
                 }
             }
         }
@@ -146,7 +134,7 @@ public class DiskCache {
         new DiskCacheTask(this).execute(DiskCacheTask.TEAR_DOWN);
     }
 
-    public final void tearDown() {
+    public void tearDown() {
         synchronized (mDiskCacheLock) {
             mDiskCacheStarting = true;
 
@@ -166,7 +154,7 @@ public class DiskCache {
     private void init() throws IOException {
         synchronized (mDiskCacheLock) {
             if (mDiskLruCache == null || mDiskLruCache.isClosed()) {
-                final File cacheDir = getDiskCacheDir(context, DISK_CACHE_SUBDIR);
+                final File cacheDir = getDiskCacheDir(ContextHolder.get(), DISK_CACHE_SUBDIR);
 
                 if (!cacheDir.exists()) {
                     cacheDir.mkdir();
@@ -187,7 +175,8 @@ public class DiskCache {
     private File getDiskCacheDir(final Context context, final String diskCacheSubdir) {
 
         final String cachePath = (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) ||
-                !Environment.isExternalStorageRemovable()) && context.getExternalCacheDir() != null ? context.getExternalCacheDir().getPath() : context
+                !Environment.isExternalStorageRemovable()) && context.getExternalCacheDir() != null ? context
+                .getExternalCacheDir().getPath() : context
                 .getCacheDir().getPath();
 
         return new File(cachePath + File.separator + diskCacheSubdir);

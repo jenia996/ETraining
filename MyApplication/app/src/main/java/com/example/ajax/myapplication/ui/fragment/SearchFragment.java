@@ -1,6 +1,5 @@
 package com.example.ajax.myapplication.ui.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 
 import com.example.ajax.myapplication.R;
 import com.example.ajax.myapplication.adapters.OnItemClickListener;
@@ -46,7 +44,8 @@ public class SearchFragment extends BaseFragment implements ResultView<List<Book
     @Override
     public void onPrepareOptionsMenu(final Menu menu) {
         final MenuItem myActionMenuItem = menu.findItem(R.id.action_search);
-        final android.support.v7.widget.SearchView searchView = (android.support.v7.widget.SearchView) myActionMenuItem.getActionView();
+        final android.support.v7.widget.SearchView searchView = (android.support.v7.widget.SearchView)
+                myActionMenuItem.getActionView();
         searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
 
             @Override
@@ -88,15 +87,12 @@ public class SearchFragment extends BaseFragment implements ResultView<List<Book
         setHasOptionsMenu(true);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
     @Nullable
     @Override
-    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState) {
-        final View view = LayoutInflater.from(container.getContext()).inflate(R.layout.fragment_search, container, false);
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle
+            savedInstanceState) {
+        final View view = LayoutInflater.from(container.getContext()).inflate(R.layout.fragment_search, container,
+                false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.list_books);
         final Resources resources = getResources();
         final int add = resources.getInteger(R.integer.search_multiple);
@@ -155,25 +151,12 @@ public class SearchFragment extends BaseFragment implements ResultView<List<Book
         hideProgressDialog();
         if (mNewRequest) {
             mAdapter.setBooks(response);
-            hideSoftKeyboard(getActivity());
             mNewRequest = false;
         } else {
             mAdapter.addBooks(response);
         }
         mAdapter.notifyDataSetChanged();
 
-    }
-
-    public void hideSoftKeyboard(final Activity activity) {
-        final InputMethodManager inputMethodManager =
-                (InputMethodManager) activity.getSystemService(
-                        Activity.INPUT_METHOD_SERVICE);
-        final View currentFocus = activity.getCurrentFocus();
-        if (currentFocus == null) {
-            return;
-        }
-        inputMethodManager.hideSoftInputFromWindow(
-                currentFocus.getWindowToken(), 0);
     }
 
     private OnItemClickListener createOnItemClickListener() {

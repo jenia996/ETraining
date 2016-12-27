@@ -34,7 +34,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textColor="@android:color/holo_blue_light"/>
+                android:layout_margin="8dp"
+                android:textColor="@android:color/holo_blue_light"
+                android:textSize="18sp"/>
 
             <RatingBar
                 android:id="@+id/rating"
@@ -45,6 +47,14 @@
                 android:isIndicator="true"
                 android:numStars="5"/>
 
+            <Button
+                android:text="@string/add_to_watch_list"
+                android:id="@+id/add_to_watch_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/description"
@@ -61,12 +71,12 @@
                 android:layout_height="350dp">
 
                 <TextView
-                    android:visibility="gone"
                     android:id="@+id/similar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:text="@string/similar_books"/>
+                    android:text="@string/similar_books"
+                    android:visibility="gone"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/similar_books"

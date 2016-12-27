@@ -105,7 +105,7 @@ public class DBHelper extends SQLiteOpenHelper implements IDBOperation {
     @Override
     public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
         for (final Class<?> clazz : Contract.MODELS) {
-            final String sql = "DROP TABLE " + getTableName(clazz) + " IF EXISTS";
+            final String sql = "DROP TABLE IF EXISTS " + getTableName(clazz);
             db.execSQL(sql);
         }
         onCreate(db);
@@ -113,9 +113,12 @@ public class DBHelper extends SQLiteOpenHelper implements IDBOperation {
     }
 
     @Override
-    public Cursor query(final String sql, final String... args) {
+    public Cursor query(final String sql, String... args) {
         final SQLiteDatabase database = getReadableDatabase();
 
+        if (args[0].equals("")) {
+            args = null;
+        }
         return database.rawQuery(sql, args);
     }
 

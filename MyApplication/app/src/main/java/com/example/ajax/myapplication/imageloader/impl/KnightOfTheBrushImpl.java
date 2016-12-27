@@ -33,7 +33,7 @@ public class KnightOfTheBrushImpl implements KnightOfTheBrush {
         memCache = new MemCache();
         loader = new Loader(2);
         mDiskCache = DiskCache.getInstance();
-        mDiskCache.requestInit(ContextHolder.get());
+        mDiskCache.requestInit();
         bitmapOperation = new BitmapOperation();
         mLoading = new ConcurrentHashMap<>();
     }
@@ -41,6 +41,7 @@ public class KnightOfTheBrushImpl implements KnightOfTheBrush {
     public void clearCache() {
         memCache.clear();
     }
+
 
     @Override
     public void drawBitmap(final ImageView imageView, final String imageUrl) {
@@ -53,7 +54,6 @@ public class KnightOfTheBrushImpl implements KnightOfTheBrush {
         if (mLoading.get(imageUrl) != null && mLoading.get(imageUrl)) {
             return;
         }
-
         imageView.setImageBitmap(null);
         synchronized (memCache) {
             final Bitmap bitmap = memCache.get(imageUrl);

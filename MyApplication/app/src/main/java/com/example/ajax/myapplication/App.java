@@ -30,8 +30,8 @@ public class App extends Application {
         final AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         final Intent updateIntent = new Intent(this, BookUpdater.class);
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        final Long timestamp = prefs.getLong(Constants.UPDATE_TIMESTAMT, defaultTime());
-        updateIntent.putExtra(Constants.UPDATE_TIMESTAMT, timestamp);
+        final Long timestamp = prefs.getLong(Constants.UPDATE_TIMESTAMP, defaultTime());
+        updateIntent.putExtra(Constants.UPDATE_TIMESTAMP, timestamp);
         final PendingIntent pendingIntent = PendingIntent.getBroadcast(this, Constants.UPDATE_REQUEST_CODE, updateIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         alarmManager.set(AlarmManager.RTC_WAKEUP, timestamp, pendingIntent);
     }
@@ -39,8 +39,6 @@ public class App extends Application {
     @Override
     public void onCreate() {
         ContextHolder.set(this);
-        final DBHelper helper = new DBHelper(this, null, Constants.DATABASE_VERSION);
-        helper.getWritableDatabase();
         new Thread(new Runnable() {
 
             @Override

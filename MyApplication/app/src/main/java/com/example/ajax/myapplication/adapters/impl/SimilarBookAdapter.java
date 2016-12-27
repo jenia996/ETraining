@@ -23,7 +23,8 @@ public class SimilarBookAdapter extends RecyclerView.Adapter<SimilarBookAdapter.
     private final View.OnClickListener mListener;
     private final List<BookModel> mBooks;
 
-    public SimilarBookAdapter(final Context pContext, final List<BookModel> pBooks, final OnItemClickListener pItemClickListener) {
+    public SimilarBookAdapter(final Context pContext, final List<BookModel> pBooks, final OnItemClickListener
+            pItemClickListener) {
         mContext = pContext;
         mBooks = new ArrayList<>(pBooks);
         mImageLoader = new ImageLoader();

@@ -14,9 +14,6 @@ public final class Book {
     public static final String ID = "id";
 
     @dbString
-    public static final String ISBN = "isbn13";
-
-    @dbString
     public static final String DESCRIPTION = "description";
 
     @dbString
@@ -30,8 +27,5 @@ public final class Book {
 
     @dbLong
     public static final String AUTHOR_ID = "author_id";
-
-    @dbBoolean
-    public static final String PENDING = "pending";
 
 }

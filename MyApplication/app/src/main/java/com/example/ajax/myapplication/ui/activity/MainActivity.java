@@ -13,6 +13,7 @@ import android.view.MenuItem;
 
 import com.example.ajax.myapplication.R;
 import com.example.ajax.myapplication.ui.fragment.SearchFragment;
+import com.example.ajax.myapplication.ui.fragment.WatchListFragment;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -25,6 +26,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         } else if (id == R.id.settings) {
             final Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
+        } else if (id == R.id.nav_watch_list) {
+            final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.content_main, new WatchListFragment()).commit();
         }
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -56,6 +60,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_main, new WatchListFragment()).commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
     }
 }

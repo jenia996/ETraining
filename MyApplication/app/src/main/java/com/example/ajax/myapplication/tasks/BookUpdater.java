@@ -27,7 +27,7 @@ public class BookUpdater extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, final Intent intent) {
         final SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(ContextHolder.get()).edit();
-        prefs.putLong(Constants.UPDATE_TIMESTAMT, newTimestamp()).apply();
+        prefs.putLong(Constants.UPDATE_TIMESTAMP, newTimestamp()).apply();
         Loader loader = new Loader();
 
         List<BookModel> bookModelList = new ArrayList<>();

@@ -11,6 +11,7 @@ import com.example.ajax.myapplication.R;
 import com.example.ajax.myapplication.adapters.OnItemClickListener;
 import com.example.ajax.myapplication.imageloader.impl.ImageLoader;
 import com.example.ajax.myapplication.model.viewmodel.BookModel;
+import com.example.ajax.myapplication.utils.ContextHolder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,6 +22,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
     private ImageLoader mImageLoader;
     private List<BookModel> books;
     private View.OnClickListener mListener;
+    private final LayoutInflater mInflater;
 
     public BookAdapter(final OnItemClickListener pItemCLickListener) {
         this();
@@ -36,11 +38,12 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.ViewHolder> {
 
     private BookAdapter() {
         books = new ArrayList<>();
+        mInflater = LayoutInflater.from(ContextHolder.get());
     }
 
     @Override
     public ViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.book_item, parent, false);
+        final View view = mInflater.inflate(R.layout.book_item, parent, false);
         return new ViewHolder(view);
     }
 

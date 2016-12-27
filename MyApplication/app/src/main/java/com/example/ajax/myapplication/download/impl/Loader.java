@@ -6,7 +6,6 @@ import com.example.ajax.myapplication.download.OnResultCallback;
 import com.example.ajax.myapplication.download.OwnAsyncTask;
 import com.example.ajax.myapplication.download.ProgressCallback;
 
-import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,7 +17,7 @@ public class Loader {
         executorService = Executors.newFixedThreadPool(1);
     }
 
-    public Loader(int pNumber) {
+    public Loader(final int pNumber) {
         executorService = Executors.newFixedThreadPool(pNumber);
     }
 
@@ -53,7 +52,7 @@ public class Loader {
                             onResultCallback.onSuccess(result);
                         }
                     });
-                } catch (final IOException e) {
+                } catch (final Exception e) {
                     handler.post(new Runnable() {
 
                         @Override

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -27,7 +28,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         final int id = v.getId();
         if (id == R.id.edit_schedule) {
             final EditScheduleDialog test = new EditScheduleDialog();
-            test.show(getFragmentManager(), Constants.EDIT_SCHEDULE_DIALOG);
+            test.show(getSupportFragmentManager(), Constants.EDIT_SCHEDULE_DIALOG);
         }
         if (id == R.id.download_large) {
             mSettings.setDownloadLarge(mDownloadLarge.isChecked());
@@ -35,19 +36,18 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        final int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         mSettings.save();
-    }
-
-    @Override
-    protected void onSaveInstanceState(final Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class HttpClient {
+public final class HttpClient {
 
     public static byte[] getByteArray(final String adress) throws IOException {
         final InputStream inputStream = getStream(adress);

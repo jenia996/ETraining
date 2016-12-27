@@ -10,19 +10,31 @@
         android:layout_width="60dp"
         android:layout_height="84dp"/>
 
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 
     <TextView
-        android:id="@+id/books_count"
+        android:id="@+id/author_name"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/image"
+        android:textSize="24sp"/>
+
+    <TextView
+        android:id="@+id/about"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/image"/>
+
+    <TextView
+        android:id="@+id/best_books"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/about"
+        android:text="@string/most_viewed_books"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/books"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/best_books">
     </android.support.v7.widget.RecyclerView>
 </RelativeLayout>
